@@ -1,0 +1,10 @@
+{
+  "extends": "./node_modules/gts/",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "semi": "off"
+  },
+  "ignorePatterns": ["**/node_modules", "build/", "dist/"]
+}
