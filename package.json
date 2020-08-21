@@ -1,0 +1,40 @@
+{
+    "name": "existential-risk",
+    "version": "0.0.1",
+    "description": "Game about existential risk and leading mankind to a better future.",
+    "private": true,
+    "browser": true,
+    "main": "existential-risk.js",
+    "engines": {
+        "node": "13.7.0"
+    },
+    "scripts": {
+        "start": "sh -c 'node_modules/.bin/tsc --noEmit' && sh -c 'node_modules/.bin/parcel src/index.html --open'",
+        "build": "sh -c 'node_modules/.bin/tsc --noEmit' && sh -c 'node_modules/.bin/parcel build src/index.html --public-url=\"./\" --out-dir=\"release\"'",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "check": "gts check",
+        "clean": "gts clean",
+        "compile": "tsc",
+        "fix": "gts fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mmKALLL/existential-risk.git"
+    },
+    "author": "Esa Koskinen",
+    "license": "Refer to LICENSE file",
+    "bugs": {
+        "url": "https://github.com/mmKALLL/existential-risk/issues"
+    },
+    "homepage": "https://github.com/mmKALLL/existential-risk",
+    "dependencies": {
+        "pixi.js": "^5.1.3"
+    },
+    "devDependencies": {
+        "@types/node": "^13.11.1",
+        "parcel-bundler": "^1.9.4",
+        "typescript": "^3.8.3",
+        "gts": "2.x",
+	"acorn": "6.4.1"
+    }
+}
