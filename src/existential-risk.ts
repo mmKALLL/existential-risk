@@ -93,7 +93,7 @@ const updateContinentSection = (
     cs.totalPopulation +
     // 40 births per 1000 per year, 0.65 + 0.5 ratio between births/deaths
     Math.floor(((0.65 - Math.random()) * 40 * cs.totalPopulation) / 1000 / 365)
-  const newHappiness = cs.happiness + cs.happinessGrowth / 365
+  const newHappiness = cs.happiness + cs.happinessDelta / 365
   return { ...cs, totalPopulation: newPopulation, happiness: newHappiness }
 }
 

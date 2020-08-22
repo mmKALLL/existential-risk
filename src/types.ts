@@ -30,7 +30,7 @@ export type ContinentSection = {
   lifeExpectancyDelta: number // acceleration of life expectancy per year; increased by tech improvements
 
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
-  happinessGrowth: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
+  happinessDelta: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
 
   foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but mass immigration and conflict greatly decreases. High values boost education.
   financeIndex: number // 0 to 10, level of financial freedom. Influences happiness and causes education index to grow/decrease.
@@ -94,7 +94,7 @@ export const initialGameState = (): GameState => ({
 // Population growth and delta based on https://ourworldindata.org/grapher/birth-rate-vs-death-rate?stackMode=absolute&time=2006..latest
 // Happiness based on World Happiness Report: https://www.kaggle.com/londeen/world-happiness-report-2020, growth on historical data from https://www.kaggle.com/unsdsn/world-happiness
 // Life expectancy based on Our World in Data report: https://ourworldindata.org/life-expectancy
-// Food index is based on Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
+// Food index is based on the inverse of Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
 // Finance index is based on median percentile of GDP, compiled from data on Our World in Data
 // globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
 // Conflict level based on guesstimations and news
@@ -107,7 +107,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 63.2,
     lifeExpectancyDelta: 0.46,
     happiness: 4.571100235,
-    happinessGrowth: 0.0304200469,
+    happinessDelta: 0.0304200469,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -128,8 +128,8 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 73.6,
     lifeExpectancyDelta: 0.27,
     happiness: 5.384300232, // Median from 2020. 2015 data medians: Southeast: 5.353499889, South: 4.75415659, East: 5.789672375
-    happinessGrowth: 0.017038122,
-    foodIndex: 0,
+    happinessDelta: 0.017038122,
+    foodIndex: 8.4,
     financeIndex: 0,
     educationIndex: 0,
     techIndex: 0,
@@ -149,7 +149,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 78.6,
     lifeExpectancyDelta: 0.23,
     happiness: 6.5845398902, // Average from 2020 medians: Northern: 7.504499912, Central: 6.215499878, Eastern: 5.949999809, Southern: 6.15899992, Western: 7.093699932,
-    happinessGrowth: 0.076499975,
+    happinessDelta: 0.076499975,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -170,7 +170,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 79.2,
     lifeExpectancyDelta: 0.03,
     happiness: 7.0858500005,
-    happinessGrowth: -0.0376,
+    happinessDelta: -0.0376,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -191,7 +191,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 75.1,
     lifeExpectancyDelta: -0.02,
     happiness: 6.304800034,
-    happinessGrowth: -0.053,
+    happinessDelta: -0.053,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -212,7 +212,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 73.6,
     lifeExpectancyDelta: 0.37,
     happiness: 6.163400173,
-    happinessGrowth: -0.021,
+    happinessDelta: -0.021,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -233,7 +233,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 71.7,
     lifeExpectancyDelta: 0.13,
     happiness: 6.528499889,
-    happinessGrowth: -0.088,
+    happinessDelta: -0.088,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -254,7 +254,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 83.4,
     lifeExpectancyDelta: 0.15,
     happiness: 7.25210001,
-    happinessGrowth: -0.006,
+    happinessDelta: -0.006,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -275,7 +275,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 71.5,
     lifeExpectancyDelta: 0.28,
     happiness: 5.546000004,
-    happinessGrowth: -0.034,
+    happinessDelta: -0.034,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -298,7 +298,7 @@ const continentBase: ContinentSection = {
   lifeExpectancy: 0,
   lifeExpectancyDelta: 0,
   happiness: 0,
-  happinessGrowth: 0,
+  happinessDelta: 0,
   foodIndex: 0,
   financeIndex: 0,
   educationIndex: 0,
