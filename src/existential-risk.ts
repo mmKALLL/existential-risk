@@ -201,10 +201,28 @@ function drawUIComponents(mouseBuffer: MouseBuffer) {
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
 }
 
+function drawMultilineText(
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number = 20
+) {
+  useText()
+  ctx.beginPath()
+  let i = 0
+  text.split('\n').forEach(line => {
+    ctx.fillText(line, x, y + lineHeight * i, maxWidth)
+    i++
+  })
+  ctx.stroke()
+}
+
 function useText() {
   ctx.strokeStyle = '#101'
   ctx.lineWidth = 1
   ctx.textBaseline = 'top'
+  ctx.font = '14px sans-serif'
 }
 
 function usePanelBorder() {
