@@ -12,9 +12,9 @@ const interval = setInterval(() => {
     for (let y = i; y < 900; y += 5) {
       ctx.beginPath()
       ctx.strokeStyle = `rgb(
-        0,
         ${Math.floor(255 - x / 5)},
-        ${Math.floor(255 - x / 4)})`
+        ${Math.floor(255 - x / 5)},
+        ${Math.floor(255 - y / 4)})`
       ctx.arc(x, y, 3, 0, 2 * Math.PI)
       ctx.stroke()
     }
