@@ -69,22 +69,100 @@ function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
   mouseBuffer.rightClick = undefined
 }
 
+/**
+ * Drawing functions
+ */
 
-ctx.beginPath()
-ctx.rect(20, 20, 150, 100)
-ctx.stroke()
+function render(state: GameState, mouseBuffer: MouseBuffer) {
+  clearCanvas()
+  drawContinents(state)
+  drawUIComponents(mouseBuffer)
+}
 
-let i = 0
-const interval = setInterval(() => {
-  for (let x = i; x < 1400; x += 5) {
-    for (let y = i; y < 900; y += 5) {
-      ctx.beginPath()
-      ctx.strokeStyle = `rgb(
-        ${Math.floor(255 - x / 5)},
-        ${Math.floor(255 - x / 5)},
-        ${Math.floor(255 - y / 4)})`
-      ctx.arc(x, y, 3, 0, 2 * Math.PI)
-      ctx.stroke()
+function clearCanvas() {
+  ctx.clearRect(0, 0, 1400, 900)
+}
+
+function drawContinents(state: GameState) {
+  // Draw continental background
+  ctx.globalAlpha = 0.4
+  ctx.drawImage(images.continents2, 0, 150, 1300, 650)
+  ctx.globalAlpha = 1
+
+  // Draw lines between neighboring continents
+  state.continentSections.forEach(cs => {
+    ctx.strokeStyle = '#000'
+    ctx.lineWidth = 2
+    cs.neighbors.forEach(name => {
+      const neighbor = state.continentSections.find(cs => cs.name === name)
+      if (neighbor) {
+        ctx.beginPath()
+        ctx.moveTo(...xywhCenter(cs.xywh))
+        ctx.lineTo(...xywhCenter(neighbor.xywh))
+        ctx.stroke()
+      }
+    })
+  })
+
+  // Draw the continents themselves
+  state.continentSections.forEach(cs => {
+    ctx.beginPath()
+    ctx.strokeStyle = `rgb(${Math.random},${Math.random},${Math.random})`
+    ctx.rect(...cs.xywh)
+    ctx.stroke()
+  })
+}
+
+function drawUIComponents(mouseBuffer: MouseBuffer) {
+  ctx.strokeStyle = '#000'
+  ctx.beginPath()
+
+  let width, height, strokeOffset
+
+  // Top panel
+  ctx.lineWidth = 8
+  width = 1600
+  height = 50
+  strokeOffset = ctx.lineWidth / 2
+  ctx.clearRect(1400 - width - strokeOffset, strokeOffset, width, height)
+  ctx.rect(1400 - width - strokeOffset, strokeOffset, width, height)
+
+  // Top-right status box
+  ctx.lineWidth = 8
+  width = 350
+  height = 150
+  strokeOffset = ctx.lineWidth / 2
+  ctx.clearRect(1400 - width - strokeOffset, strokeOffset, width, height)
+  ctx.rect(1400 - width - strokeOffset, strokeOffset, width, height)
+
+  // Status box texts
+  ctx.lineWidth = 1
+  ctx.strokeText(
+    'World stats (average)',
+    1400 - width - strokeOffset + 20,
+    strokeOffset + 20,
+    width - 40
+  )
+  ctx.stroke()
+
+  // debug
+  ctx.strokeText(
+    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`,
+    10,
+    20
+  )
+}
+
+/**
+ * Utilities
+ */
+
+// Return x-y tuple of an rectangle's center point
+const xywhCenter = (xywh: Rectangle): [number, number] => [
+  xywh[0] + xywh[2] / 2, // x + width / 2
+  xywh[1] + xywh[3] / 2, // y + height / 2
+]
+
 /**
  * Start loading the images
  */
