@@ -137,7 +137,7 @@ function drawContinents(state: GameState) {
     cs.neighbors.forEach(name => {
       const neighbor = getContinent(state, name)
       if (neighbor) {
-        if (!isPacificConnection(name, neighbor.name)) {
+        if (!isPacificConnection(cs.name, neighbor.name)) {
           ctx.beginPath()
           ctx.moveTo(...xywhCenter(cs.xywh))
           ctx.lineTo(...xywhCenter(neighbor.xywh))
@@ -330,13 +330,16 @@ const continentMidCoordinate = (
 const getContinent = (state: GameState, name: ContinentName) =>
   state.continentSections.find(cs => cs.name === name)
 
-// Check if the connection crosses the pacific ocean, i.e. connection lines need to wrap the edges
+// Check if the connection crosses the pacific ocean. If so the connection lines need to wrap the edges instead of going straight across
 const isPacificConnection = (
   name1: ContinentName,
   name2: ContinentName
-): boolean =>
-  (name1 === 'North America' && (name2 === 'Asia' || name2 === 'Russia')) ||
-  (name2 === 'North America' && (name1 === 'Asia' || name1 === 'Russia'))
+): boolean => {
+  return (
+    (name1 === 'North America' && (name2 === 'Asia' || name2 === 'Russia')) ||
+    (name2 === 'North America' && (name1 === 'Asia' || name1 === 'Russia'))
+  )
+}
 
 const selectedContinent = (
   state: GameState,
