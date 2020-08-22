@@ -15,6 +15,7 @@ import {
 
 const constants = {
   FPS: 30,
+  topPanelBorderWidth: 4,
 }
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
@@ -91,7 +92,7 @@ function render(state: GameState, mouseBuffer: MouseBuffer) {
   clearCanvas()
   drawBackground()
   drawContinents(state)
-  drawUIComponents(mouseBuffer)
+  drawUIComponents(state, mouseBuffer)
 }
 
 function clearCanvas() {
@@ -148,7 +149,7 @@ function drawContinents(state: GameState) {
   })
 }
 
-function drawUIComponents(mouseBuffer: MouseBuffer) {
+function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   const strokeOffset = constants.topPanelBorderWidth / 2
   const drawTopBarComponentBorder = (
     rightEdgeX: number,
