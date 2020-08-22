@@ -50,7 +50,7 @@ export type ContinentSection = {
   techIndexDelta: number // acceleration of tech index per year
 
   // Disease causes deaths. Decreases over time as a function of education, random events cause a jump in proportion to finance index.
-  diseaseIndex: number // 0 to 100, normally around 0-5 for wealthy countries and 5-15 elsewhere.
+  diseaseIndex: number // 0 to 100, normally around 0-5 for wealthy countries and 5-15 elsewhere. Global 10 or continental 20 is the threshold for declaring a pandemic.
 
   /**
    * Conflict level.
