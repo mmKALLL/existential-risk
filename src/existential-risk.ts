@@ -216,6 +216,32 @@ const xywhCenter = (xywh: Rectangle): [number, number] => [
   xywh[1] + xywh[3] / 2, // y + height / 2
 ]
 
+const continentMidCoordinate = (
+  state: GameState,
+  name1: ContinentName,
+  name2: ContinentName
+): Coordinate => ({
+  x:
+    (xywhCenter(getContinent(state, name1)!.xywh)[0] +
+      xywhCenter(getContinent(state, name2)!.xywh)[0]) /
+    2,
+  y:
+    (xywhCenter(getContinent(state, name1)!.xywh)[1] +
+      xywhCenter(getContinent(state, name2)!.xywh)[1]) /
+    2,
+})
+
+const getContinent = (state: GameState, name: ContinentName) =>
+  state.continentSections.find(cs => cs.name === name)
+
+// Check if the connection crosses the pacific ocean, i.e. connection lines need to wrap the edges
+const isPacificConnection = (
+  name1: ContinentName,
+  name2: ContinentName
+): boolean =>
+  (name1 === 'North America' && (name2 === 'Asia' || name2 === 'Russia')) ||
+  (name2 === 'North America' && (name1 === 'Asia' || name1 === 'Russia'))
+
 /**
  * Start loading the images
  */
