@@ -207,7 +207,13 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
     'World stats (average):\nHappiness: 100\nConfidence: 100',
     1400 - statusBoxWidth + 10,
     10 + strokeOffset,
-    statusBoxWidth - 30
+    statusBoxWidth / 2 - 30
+  )
+  drawMultilineText(
+    'World stats (median):\nHappiness: 80\nConfidence: 80',
+    1400 - statusBoxWidth / 2 + 5,
+    10 + strokeOffset,
+    statusBoxWidth / 2 - 30
   )
 
   // Selection box. Starts from far right edge
