@@ -105,7 +105,7 @@ export const initialGameState = (): GameState => ({
 // Life expectancy based on Our World in Data report: https://ourworldindata.org/life-expectancy
 // GDP is based on International Monetary Fund's data: https://www.imf.org/external/datamapper/NGDP_RPCH@WEO/OEMDC/ADVEC/WEOWORLD
 // Food index is based on the inverse of Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
-// Finance index is based on median percentile of GDP, compiled from data on Our World in Data.
+// Finance index is based on GDP, compiled from data on Our World in Data and IMF.
 // globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
 // Conflict level based on guesstimations and news
 const initialContinents = (): ContinentSection[] => [
