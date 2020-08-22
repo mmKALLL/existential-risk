@@ -234,7 +234,11 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
       new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
     )
       .toISOString()
-      .slice(0, 10)}`, // Get the date only
+      .slice(0, 10)}` + // Get the date only
+      '\n' +
+      `Game speed: ${Math.floor(
+        constants.yearLengthMillis / 1000
+      )}s per year (${Math.floor(constants.yearLengthMillis / 365)}ms per day)`,
     200,
     10 + strokeOffset,
     400
