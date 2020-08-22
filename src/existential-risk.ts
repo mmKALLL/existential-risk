@@ -1,6 +1,74 @@
-const ctx = (document.getElementById(
-  'gameCanvas'
-) as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D
+import {
+  initialGameState,
+  GameState,
+  Rectangle,
+  MouseBuffer,
+  initialMouseBuffer,
+} from './types'
+
+/**
+ * Constants
+ */
+
+const constants = {
+  FPS: 30,
+}
+
+const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
+const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+
+/**
+ * Game loop
+ */
+
+function startGame() {
+  const timePerFrame = 1000 / constants.FPS
+  const yearLengthMillis = 120 * 1000 // 2 minutes
+  const nextDayMillis = (timeAfterAdvanceMillis: number): number =>
+    yearLengthMillis / 365 - timeAfterAdvanceMillis
+  let timeUntilDayAdvance = nextDayMillis(0)
+
+  let gs: GameState = initialGameState() // Game state
+  const mouseBuffer: MouseBuffer = initialMouseBuffer()
+
+  setInterval(() => {
+    timeUntilDayAdvance -= timePerFrame
+    if (timeUntilDayAdvance < 0) {
+      timeUntilDayAdvance = nextDayMillis(timeUntilDayAdvance)
+      gs = advanceDay(gs)
+    }
+
+    handleMouseEvents(gs, mouseBuffer)
+
+    render(gs, mouseBuffer)
+  }, timePerFrame)
+
+  // Event handlers
+  // Get mouse position and store it in gameState
+  canvas.addEventListener('mousemove', event => {
+    let bound = canvas.getBoundingClientRect()
+
+    mouseBuffer.lastMouseX = event.clientX - bound.left - canvas.clientLeft
+    mouseBuffer.lastMouseY = event.clientY - bound.top - canvas.clientTop
+  })
+}
+
+/**
+ * Game state handling
+ */
+
+function advanceDay(gs: GameState): GameState {
+  return { ...gs, day: gs.day + 1 }
+}
+
+function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
+  // TODO
+
+  // Cleanup
+  mouseBuffer.click = undefined
+  mouseBuffer.rightClick = undefined
+}
+
 
 ctx.beginPath()
 ctx.rect(20, 20, 150, 100)
