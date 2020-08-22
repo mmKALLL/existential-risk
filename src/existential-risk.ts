@@ -214,19 +214,35 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
 
   // Selection box texts
+  const continent = selectedContinent(state, mouseBuffer)
+  if (continent) {
+    console.log('continent selected!')
+    const selectionText = JSON.stringify(continent, null, 2)
+    drawMultilineText(selectionText, 1400 + 10, 10 + strokeOffset, 200)
+  }
+
+  // date and speed
+  useText()
+  drawMultilineText(
+    `Current date: ${new Date(
+      new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
+    )
+      .toISOString()
+      .slice(0, 10)}`, // Get the date only
+    200,
+    10 + strokeOffset,
+    400
+  )
 
   // debug
   useText()
-  ctx.fillText(
-    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`,
-    10 + strokeOffset,
-    10 + strokeOffset
-  )
-  ctx.fillText(
-    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`
-      .split('')
-      .reverse()
-      .join(''),
+  drawMultilineText(
+    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})` +
+      '\n' +
+      `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`
+        .split('')
+        .reverse()
+        .join(''),
     10 + strokeOffset,
     10 + strokeOffset,
     400
