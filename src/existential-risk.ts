@@ -9,6 +9,7 @@ import {
   Point,
   Coordinate,
 } from './types'
+import { render } from './render'
 
 /**
  * Constants
@@ -16,10 +17,8 @@ import {
 
 const constants = {
   FPS: 30,
-  topPanelBorderWidth: 4,
-  fontSize: 14,
-  lineHeight: 20,
   yearLengthMillis: 120 * 1000, // 2 minutes
+  maxPopulation: Math.pow(10, 10), // 10 billion is max for one continent, no matter what
 }
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
@@ -58,7 +57,7 @@ function startGame() {
 
     handleMouseEvents(gs, mouseBuffer)
 
-    render(gs, mouseBuffer)
+    render(gs, mouseBuffer, images)
   }, timePerFrame)
 
   // Event handlers
@@ -97,20 +96,85 @@ const updateContinentSection = (
 ): ContinentSection => {
   // prettier-ignore
   const newPopulation =
-    cs.totalPopulation
-      + ((cs.totalPopulation * cs.birthRate / 1000) // births
-      - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
-      - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
-      - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
-    / 365) // calculate subtotal per day instead of year
-  const birthRate = cs.birthRate + cs.birthRateDelta / 365
-  const happiness = cs.happiness + cs.happinessDelta / 365
+    clamp(
+      0, constants.maxPopulation,
+      cs.totalPopulation
+        + ((cs.totalPopulation * cs.birthRate / 1000) // births
+        - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
+        - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
+        - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
+      / 365) // calculate subtotal per day instead of year
+    )
 
-  return { ...cs, totalPopulation: newPopulation, birthRate, happiness }
+  const birthRate = clamp(0, 100, cs.birthRate + cs.birthRateDelta / 365)
+  const lifeExpectancy = clamp(
+    15,
+    250,
+    cs.lifeExpectancy + cs.lifeExpectancyDelta / 365
+  )
+  const GDPCapita = clamp(
+    500,
+    Math.pow(10, 10),
+    cs.GDPCapita * (1 + cs.GDPCapitaMultiplier / 365)
+  )
+  const happiness = clamp(0, 10, cs.happiness + cs.happinessDelta / 365)
+  const happinessDelta = cs.happinessDelta // TODO
+
+  // prettier-ignore
+  const conflictLevel = clamp(0, 10,
+    cs.conflictLevel
+      + (6.5 - happiness) / 365 // increase conflict by 1/year when happiness = 5.5, 2/year when = 4.5, etc; higher happiness decreases conflict
+  )
+
+  const financeIndex = calculateFinanceIndex(GDPCapita)
+  // {
+  //   name: 'Africa',
+  //   totalPopulation: 1340598147,
+  //   birthRate: 35.91,
+  //   birthRateDelta: -0.41,
+  //   lifeExpectancy: 63.2,
+  //   lifeExpectancyDelta: 0.46,
+  //   GDPCapita: 1930,
+  //   GDPCapitaMultiplier: 1.036,
+  //   happiness: 4.571100235,
+  //   happinessDelta: 0.0304200469,
+  //   foodIndex: 7.1,
+  //   financeIndex: 0.2,
+  //   educationIndex: 0,
+  //   techIndex: 0,
+  //   techIndexDelta: 0,
+  //   diseaseIndex: 0,
+  //   conflictLevel: 0,
+  //   globalTempDiffSensitivity: 3.6,
+  //   subRegions: [],
+  //   neighbors: ['Europe', 'Asia', 'South America', 'Antarctica'],
+  //   xywh: [590, 380, 210, 280],
+  // },
+
+  return {
+    ...cs,
+    totalPopulation: newPopulation,
+    birthRate,
+    lifeExpectancy,
+    GDPCapita,
+    happiness,
+    happinessDelta,
+
+    financeIndex,
+
+    conflictLevel,
+  }
 }
 
 const calculateEmigrations = (gs: GameState): GameState => {
   // TODO
+  return gs
+}
+
+// once-in-a-year adjustment
+const calculateIndices = (gs: GameState): GameState => {
+  // TODO: Update foodIndex, financeIndex, educationIndex, and techIndex for each CS
+  // TODO: Update deltas for GS values
   return gs
 }
 
@@ -123,286 +187,8 @@ function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
 }
 
 /**
- * Drawing functions
- */
-
-function render(state: GameState, mouseBuffer: MouseBuffer) {
-  clearCanvas()
-  drawBackground()
-  drawContinents(state)
-  drawUIComponents(state, mouseBuffer)
-}
-
-function clearCanvas() {
-  ctx.clearRect(0, 0, 1400, 900)
-}
-
-function drawBackground() {
-  // Draw continental background
-  ctx.globalAlpha = 0.65
-  ctx.drawImage(images.continents2, 0, 90, 1370, 700)
-  ctx.globalAlpha = 1
-}
-
-function drawContinents(state: GameState) {
-  // Set up the drawing
-  ctx.beginPath()
-  useContinentBorder()
-
-  // Draw lines between neighboring continents
-  state.continentSections.forEach(cs => {
-    cs.neighbors.forEach(name => {
-      const neighbor = getContinent(state, name)
-      if (neighbor) {
-        if (!isPacificConnection(cs.name, neighbor.name)) {
-          ctx.beginPath()
-          ctx.moveTo(...xywhCenter(cs.xywh))
-          ctx.lineTo(...xywhCenter(neighbor.xywh))
-          ctx.stroke()
-        }
-      }
-    })
-  })
-
-  // Draw NA-Asia connections across the pacific
-  ctx.moveTo(...xywhCenter(getContinent(state, 'North America')!.xywh))
-  ctx.lineTo(0, continentMidCoordinate(state, 'North America', 'Asia').y)
-
-  ctx.moveTo(...xywhCenter(getContinent(state, 'North America')!.xywh))
-  ctx.lineTo(0, continentMidCoordinate(state, 'North America', 'Russia').y)
-
-  // Draw Asia-NA connections across the pacific
-  ctx.moveTo(...xywhCenter(getContinent(state, 'Asia')!.xywh))
-  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Asia').y)
-
-  ctx.moveTo(...xywhCenter(getContinent(state, 'Russia')!.xywh))
-  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Russia').y)
-
-  // Finish the path and draw everything in one shot
-  ctx.stroke()
-
-  // debug: Draw the continent bounding boxes
-  state.continentSections.forEach(cs => {
-    ctx.strokeRect(...cs.xywh)
-  })
-}
-
-function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
-  const strokeWidth = constants.topPanelBorderWidth
-  const strokeOffset = strokeWidth / 2
-  const drawTopBarComponentBorder = (
-    rightEdgeX: number,
-    width: number,
-    height: number
-  ) => {
-    ctx.beginPath()
-    usePanelBorder()
-    const rect: Rectangle = [
-      rightEdgeX - width - strokeOffset,
-      strokeOffset,
-      width,
-      height,
-    ]
-    ctx.clearRect(...rect)
-    ctx.rect(...rect)
-    ctx.stroke()
-  }
-
-  ctx.beginPath()
-
-  // Top panel
-  drawTopBarComponentBorder(1600, 1600 - strokeWidth, 55)
-
-  // Top-right status box. Starts from graph box.
-  const statusBoxWidth = 350
-  const statusBoxHeight = 150
-  drawTopBarComponentBorder(1400, statusBoxWidth, statusBoxHeight)
-
-  // Status box texts
-  useText()
-  drawMultilineText(
-    'World stats (average):\nHappiness: 100\nConfidence: 100',
-    1400 - statusBoxWidth + 10,
-    10 + strokeOffset,
-    statusBoxWidth / 2 - 30
-  )
-  drawMultilineText(
-    'World stats (median):\nHappiness: 80\nConfidence: 80',
-    1400 - statusBoxWidth / 2 + 5,
-    10 + strokeOffset,
-    statusBoxWidth / 2 - 30
-  )
-
-  // Selection box. Starts from far right edge
-  drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
-
-  // Selection box texts
-  const continent = selectedContinent(state, mouseBuffer)
-  if (continent) {
-    const selectionText = continentSelectionText(continent)
-    drawMultilineText(selectionText, 1400 + 10, 10 + strokeOffset, 180)
-  }
-
-  // date and speed
-  useText()
-  drawMultilineText(
-    `Current date: ${new Date(
-      new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
-    )
-      .toISOString()
-      .slice(0, 10)}` + // Get the date only
-      '\n' +
-      `Game speed: ${Math.floor(
-        constants.yearLengthMillis / 1000
-      )}s per year (${Math.floor(constants.yearLengthMillis / 365)}ms per day)`,
-    200,
-    10 + strokeOffset,
-    400
-  )
-
-  // debug
-  useText()
-  drawMultilineText(
-    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})` +
-      '\n' +
-      `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`
-        .split('')
-        .reverse()
-        .join(''),
-    10 + strokeOffset,
-    10 + strokeOffset,
-    400
-  )
-
-  ctx.stroke() // finish the path and draw the texts (and anything that's missing)
-}
-
-/**
- * Drawing utils and hooks for renderingContext settings
- */
-
-function drawMultilineText(
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number,
-  lineHeight: number = constants.lineHeight
-) {
-  useText()
-  ctx.beginPath()
-  let i = 0
-  text.split('\n').forEach(line => {
-    ctx.fillText(line, x, y + lineHeight * i, maxWidth)
-    i++
-  })
-  ctx.stroke()
-}
-
-function useText() {
-  ctx.strokeStyle = '#101'
-  ctx.lineWidth = 1
-  ctx.textBaseline = 'top'
-  ctx.font = `${constants.fontSize}px sans-serif`
-}
-
-function usePanelBorder() {
-  ctx.strokeStyle = '#101'
-  ctx.lineWidth = constants.topPanelBorderWidth
-}
-
-function useContinentBorder() {
-  ctx.strokeStyle = '#101'
-  ctx.lineWidth = 2
-}
-
-const randomRGBStyle = (): string =>
-  `rgb(${255 * Math.random()},${255 * Math.random()},${255 * Math.random()})`
-
-/**
  * Utilities
  */
-
-// Return x-y tuple of an rectangle's center point
-const xywhCenter = (xywh: Rectangle): [number, number] => [
-  xywh[0] + xywh[2] / 2, // x + width / 2
-  xywh[1] + xywh[3] / 2, // y + height / 2
-]
-
-const continentMidCoordinate = (
-  state: GameState,
-  name1: ContinentName,
-  name2: ContinentName
-): Coordinate => ({
-  x:
-    (xywhCenter(getContinent(state, name1)!.xywh)[0] +
-      xywhCenter(getContinent(state, name2)!.xywh)[0]) /
-    2,
-  y:
-    (xywhCenter(getContinent(state, name1)!.xywh)[1] +
-      xywhCenter(getContinent(state, name2)!.xywh)[1]) /
-    2,
-})
-
-const getContinent = (state: GameState, name: ContinentName) =>
-  state.continentSections.find(cs => cs.name === name)
-
-// Check if the connection crosses the pacific ocean. If so the connection lines need to wrap the edges instead of going straight across
-const isPacificConnection = (
-  name1: ContinentName,
-  name2: ContinentName
-): boolean => {
-  return (
-    (name1 === 'North America' && (name2 === 'Asia' || name2 === 'Russia')) ||
-    (name2 === 'North America' && (name1 === 'Asia' || name1 === 'Russia'))
-  )
-}
-
-const selectedContinent = (
-  state: GameState,
-  mouseBuffer: MouseBuffer
-): ContinentSection | undefined => {
-  return state.continentSections.find(cs =>
-    isWithinRectangle([mouseBuffer.lastMouseX, mouseBuffer.lastMouseY], cs.xywh)
-  )
-}
-
-const continentSelectionText = (cs: ContinentSection): string => {
-  return JSON.stringify(
-    {
-      ...cs,
-      totalPopulation: `${
-        Math.floor(cs.totalPopulation / 100000) / 10
-      } million`,
-    },
-    (key, val) =>
-      typeof val === 'number'
-        ? val > 10
-          ? val.toFixed(0)
-          : val.toFixed(2)
-        : val,
-    1
-  )
-}
-
-// Check if the point's x-y is between the rectangle's corners
-const isWithinRectangle = (point: Point, rect: Rectangle) => {
-  return (
-    point[0] > rect[0] &&
-    point[1] > rect[1] &&
-    point[0] < rect[0] + rect[2] && // x + width
-    point[1] < rect[1] + rect[3] // y + height
-  )
-}
-
-// Used for checking if a point lies within a convex.
-const isRightFromEdge = (
-  point: Point,
-  edgeStart: Point,
-  edgeEnd: Point
-): boolean => {
-  // const D = (x2 - x1) * (yp - y1) - (xp - x1) * (y2 - y1)
-  return true // true if and only if D < 0
-}
 
 // financeIndex = 0.0000008 x^(4.1) - 0.0000078 x^(3.5) - 0.005 x^(2.3) + 0.016 x^(2) + 0.175 x - 0.17, and 10 when x>70
 const calculateFinanceIndex = (GDPCapita: number): number => {
