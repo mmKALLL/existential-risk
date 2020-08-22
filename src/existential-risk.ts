@@ -214,6 +214,10 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
 }
 
+/**
+ * Drawing utils and hooks for renderingContext settings
+ */
+
 function drawMultilineText(
   text: string,
   x: number,
