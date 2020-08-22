@@ -25,20 +25,21 @@ export type ContinentSection = {
   name: ContinentName
   totalPopulation: number
   birthRate: number // births / 1000 pop / year
-  birthRateDelta: number // acceleration of population growth; decreases from high education or low happiness
+  birthRateDelta: number // acceleration of population growth yer year; decreases from high education or low happiness
   lifeExpectancy: number // years; this, disease, and conflict causes daily deaths. Can increase from high tech/finance
-  lifeExpectancyDelta: number // acceleration of life expectancy; increased by tech improvements
+  lifeExpectancyDelta: number // acceleration of life expectancy per year; increased by tech improvements
 
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
-  happinessGrowth: number // Acceleration of happiness; influenced by conflict, finance, education, and tech
+  happinessGrowth: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
 
   financeIndex: number // 0 to 10, level of financial freedom. Influences happiness and causes education index to grow/decrease.
   educationIndex: number // 0 to 10, level of education. Influences tech and finance.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
   techIndex: number // 0 to 100, level of tech in the region. 8 to 10 is normal for US 2000s, 10-25 normal for US 2010s, anything beyond causes unrest and AI/nuclear threat
-  techIndexDelta: number // acceleration of tech index
+  techIndexDelta: number // acceleration of tech index per year
 
-  diseaseIndex: number // 0 to 100, normally around 0-5. Causes deaths. Education decreases, random events cause a jump in proportion to finance index.
+  // Disease causes deaths. Decreases over time as a function of education, random events cause a jump in proportion to finance index.
+  diseaseIndex: number // 0 to 100, normally around 0-5 for wealthy countries and 5-15 elsewhere.
 
   /**
    * 0 is absolute peace,
@@ -150,8 +151,8 @@ const initialContinents = (): ContinentSection[] => [
     totalPopulation: 592072212,
     birthRate: 12.8,
     birthRateDelta: -0.24,
-    lifeExpectancy: 0,
-    lifeExpectancyDelta: 0,
+    lifeExpectancy: 79.2,
+    lifeExpectancyDelta: 0.03,
     happiness: 0,
     happinessGrowth: 0,
     financeIndex: 0,
@@ -169,8 +170,8 @@ const initialContinents = (): ContinentSection[] => [
     totalPopulation: 430759766,
     birthRate: 20.97,
     birthRateDelta: -0.32,
-    lifeExpectancy: 0,
-    lifeExpectancyDelta: 0,
+    lifeExpectancy: 75.1,
+    lifeExpectancyDelta: -0.02,
     happiness: 0,
     happinessGrowth: 0,
     financeIndex: 0,
@@ -188,8 +189,8 @@ const initialContinents = (): ContinentSection[] => [
     totalPopulation: 430759766,
     birthRate: 15.2,
     birthRateDelta: -0.261,
-    lifeExpectancy: 0,
-    lifeExpectancyDelta: 0,
+    lifeExpectancy: 73.6,
+    lifeExpectancyDelta: 0.37,
     happiness: 0,
     happinessGrowth: 0,
     financeIndex: 0,
@@ -226,8 +227,8 @@ const initialContinents = (): ContinentSection[] => [
     totalPopulation: 42677813,
     birthRate: 14.5,
     birthRateDelta: -0.24,
-    lifeExpectancy: 0,
-    lifeExpectancyDelta: 0,
+    lifeExpectancy: 83.4,
+    lifeExpectancyDelta: 0.15,
     happiness: 0,
     happinessGrowth: 0,
     financeIndex: 0,
@@ -245,8 +246,8 @@ const initialContinents = (): ContinentSection[] => [
     totalPopulation: 144386830,
     birthRate: 12.9,
     birthRateDelta: 0.16,
-    lifeExpectancy: 0,
-    lifeExpectancyDelta: 0,
+    lifeExpectancy: 71.5,
+    lifeExpectancyDelta: 0.28,
     happiness: 0,
     happinessGrowth: 0,
     financeIndex: 0,
