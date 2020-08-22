@@ -5,6 +5,7 @@ import {
   MouseBuffer,
   initialMouseBuffer,
   ContinentName,
+  ContinentSection,
   Point,
   Coordinate,
 } from './types'
@@ -18,6 +19,7 @@ const constants = {
   topPanelBorderWidth: 4,
   fontSize: 14,
   lineHeight: 20,
+  yearLengthMillis: 120 * 1000, // 2 minutes
 }
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
@@ -40,9 +42,8 @@ const setupCanvas = () => {
 
 function startGame() {
   const timePerFrame = 1000 / constants.FPS
-  const yearLengthMillis = 120 * 1000 // 2 minutes
   const nextDayMillis = (timeAfterAdvanceMillis: number): number =>
-    yearLengthMillis / 365 - timeAfterAdvanceMillis
+    constants.yearLengthMillis / 365 - timeAfterAdvanceMillis
   let timeUntilDayAdvance = nextDayMillis(0)
 
   let gs: GameState = initialGameState() // Game state
