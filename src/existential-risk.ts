@@ -75,6 +75,7 @@ function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
 
 function render(state: GameState, mouseBuffer: MouseBuffer) {
   clearCanvas()
+  drawBackground()
   drawContinents(state)
   drawUIComponents(mouseBuffer)
 }
@@ -83,33 +84,53 @@ function clearCanvas() {
   ctx.clearRect(0, 0, 1400, 900)
 }
 
-function drawContinents(state: GameState) {
+function drawBackground() {
   // Draw continental background
-  ctx.globalAlpha = 0.4
-  ctx.drawImage(images.continents2, 0, 150, 1300, 650)
+  ctx.globalAlpha = 0.65
+  ctx.drawImage(images.continents2, 0, 90, 1370, 700)
   ctx.globalAlpha = 1
+}
+
+function drawContinents(state: GameState) {
+  // Set up the drawing
+  ctx.beginPath()
+  useContinentBorder()
 
   // Draw lines between neighboring continents
   state.continentSections.forEach(cs => {
-    ctx.strokeStyle = '#000'
-    ctx.lineWidth = 2
     cs.neighbors.forEach(name => {
-      const neighbor = state.continentSections.find(cs => cs.name === name)
+      const neighbor = getContinent(state, name)
       if (neighbor) {
-        ctx.beginPath()
-        ctx.moveTo(...xywhCenter(cs.xywh))
-        ctx.lineTo(...xywhCenter(neighbor.xywh))
-        ctx.stroke()
+        if (!isPacificConnection(name, neighbor.name)) {
+          ctx.beginPath()
+          ctx.moveTo(...xywhCenter(cs.xywh))
+          ctx.lineTo(...xywhCenter(neighbor.xywh))
+          ctx.stroke()
+        }
       }
     })
   })
 
-  // Draw the continents themselves
+  // Draw NA-Asia connections across the pacific
+  ctx.moveTo(...xywhCenter(getContinent(state, 'North America')!.xywh))
+  ctx.lineTo(0, continentMidCoordinate(state, 'North America', 'Asia').y)
+
+  ctx.moveTo(...xywhCenter(getContinent(state, 'North America')!.xywh))
+  ctx.lineTo(0, continentMidCoordinate(state, 'North America', 'Russia').y)
+
+  // Draw Asia-NA connections across the pacific
+  ctx.moveTo(...xywhCenter(getContinent(state, 'Asia')!.xywh))
+  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Asia').y)
+
+  ctx.moveTo(...xywhCenter(getContinent(state, 'Russia')!.xywh))
+  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Russia').y)
+
+  // Finish the path and draw everything in one shot
+  ctx.stroke()
+
+  // debug: Draw the continent bounding boxes
   state.continentSections.forEach(cs => {
-    ctx.beginPath()
-    ctx.strokeStyle = `rgb(${Math.random},${Math.random},${Math.random})`
-    ctx.rect(...cs.xywh)
-    ctx.stroke()
+    ctx.strokeRect(...cs.xywh)
   })
 }
 
