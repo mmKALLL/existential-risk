@@ -16,6 +16,8 @@ import {
 const constants = {
   FPS: 30,
   topPanelBorderWidth: 4,
+  fontSize: 14,
+  lineHeight: 20,
 }
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
@@ -172,7 +174,7 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   ctx.beginPath()
 
   // Top panel
-  drawTopBarComponentBorder(1600, 1600, 55)
+  drawTopBarComponentBorder(1600, 1600 - strokeOffset * 2, 55)
 
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
@@ -197,7 +199,7 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   useText()
   ctx.fillText(
     `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`,
-    10,
+    10 + strokeOffset,
     10 + strokeOffset
   )
   ctx.fillText(
@@ -205,8 +207,8 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
       .split('')
       .reverse()
       .join(''),
-    10,
-    10 + strokeOffset + 20
+    10 + strokeOffset,
+    10 + strokeOffset + constants.lineHeight
   )
 
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
@@ -217,7 +219,7 @@ function drawMultilineText(
   x: number,
   y: number,
   maxWidth: number,
-  lineHeight: number = 20
+  lineHeight: number = constants.lineHeight
 ) {
   useText()
   ctx.beginPath()
@@ -233,7 +235,7 @@ function useText() {
   ctx.strokeStyle = '#101'
   ctx.lineWidth = 1
   ctx.textBaseline = 'top'
-  ctx.font = '14px sans-serif'
+  ctx.font = `${constants.fontSize}px sans-serif`
 }
 
 function usePanelBorder() {
