@@ -5,9 +5,9 @@
 export type GameState = {
   day: number
   continentSections: ContinentSection[]
-  co2ppm: number // co2 parts per million in atmosphere, based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
+  co2ppm: number // co2 parts per million in atmosphere. Values above 300 slightly hamper education. Based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
   globalTempDiff: number // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
-  globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and finances to go down in Africa, causing emigration
+  globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and decreases finances, causing emigration
 }
 
 export type ContinentName =
@@ -32,7 +32,7 @@ export type ContinentSection = {
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
   happinessGrowth: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
 
-  foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but conflict greatly decreases. High values boost education.
+  foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but mass immigration and conflict greatly decreases. High values boost education.
   financeIndex: number // 0 to 10, level of financial freedom. Influences happiness and causes education index to grow/decrease.
   educationIndex: number // 0 to 10, level of education. Influences tech and finance.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
@@ -43,6 +43,10 @@ export type ContinentSection = {
   diseaseIndex: number // 0 to 100, normally around 0-5 for wealthy countries and 5-15 elsewhere.
 
   /**
+   * Conflict level.
+   * Immigration/emigration both cause and are caused by this. Two parties may not have the same level (usually winning belligerent has less unrest).
+   * Great negative impact on happiness and foodIndex. Larger conflict causes many deaths.
+   *
    * 0 is absolute peace,
    * 1 is minor unrest and occasional violence,
    * 2 is general unrest and local conflict,
@@ -51,10 +55,10 @@ export type ContinentSection = {
    * 5 is international war within a region
    * 6 is international war within
    * 7 is international war between continents or religions
-   * 8 is large-scale international war
-   * 9 is nuclear war between two or more countries
+   * 8 is large-scale international war, i.e. world war III
+   * 9 is international nuclear war, i.e. existential threat
    */
-  conflictLevel: number // float with level of conflict within the region; two parties may not have the same level (usually winning belligerent has less unrest)
+  conflictLevel: number // float with level of conflict within the region
 
   globalTempDiffSensitivity: number // -5 to 5. Multiplier for happiness/finance sensitivity to climate change
   subRegions: Partial<ContinentSection[]> // unused
@@ -91,8 +95,8 @@ export const initialGameState = (): GameState => ({
 // Life expectancy based on Our World in Data report: https://ourworldindata.org/life-expectancy
 // Food index is based on Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
 // Finance index is based on median percentile of GDP, compiled from data on Our World in Data
-// Conflict level based on guesstimations and news
 // globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
+// Conflict level based on guesstimations and news
 const initialContinents = (): ContinentSection[] => [
   {
     name: 'Africa',
