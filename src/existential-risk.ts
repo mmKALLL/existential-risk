@@ -17,8 +17,35 @@ const interval = setInterval(() => {
         ${Math.floor(255 - y / 4)})`
       ctx.arc(x, y, 3, 0, 2 * Math.PI)
       ctx.stroke()
-    }
+/**
+ * Start loading the images
+ */
+
+const loadImage = (name: string) => {
+  const image: HTMLImageElement & { ready?: boolean } = new Image()
+  image.src = 'assets/' + name + '.png'
+  image.onload = () => (image.ready = true)
+  return image
+}
+
+function areImagesLoaded() {
+  return Object.values(images).every(image => image.ready)
+}
+
+const images = {
+  continents1: loadImage('continents1'),
+  continents2: loadImage('continents2'),
+}
+
+/**
+ * Once images are loaded, start the game!
+ */
+const imageLoader = setInterval(() => {
+  console.log(images.continents1.outerHTML)
+  console.log('not yet')
+  if (areImagesLoaded()) {
+    console.log('OK!')
+    clearInterval(imageLoader)
+    startGame()
   }
-  i++
-  i === 8 && clearInterval(interval)
 }, 200)
