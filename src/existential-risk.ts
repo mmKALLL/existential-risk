@@ -4,6 +4,9 @@ import {
   Rectangle,
   MouseBuffer,
   initialMouseBuffer,
+  ContinentName,
+  Point,
+  Coordinate,
 } from './types'
 
 /**
@@ -16,6 +19,17 @@ const constants = {
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+
+const setupCanvas = () => {
+  const width = canvas.width
+  const height = canvas.height
+  const ratio = window.devicePixelRatio
+  canvas.width = width * ratio
+  canvas.height = height * ratio
+  canvas.style.width = width + 'px'
+  canvas.style.height = height + 'px'
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0)
+}
 
 /**
  * Game loop
@@ -271,6 +285,7 @@ const imageLoader = setInterval(() => {
   if (areImagesLoaded()) {
     console.log('OK!')
     clearInterval(imageLoader)
+    setupCanvas()
     startGame()
   }
 }, 200)
