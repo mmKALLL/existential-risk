@@ -95,12 +95,23 @@ const updateContinentSection = (
   gs: GameState,
   cs: ContinentSection
 ): ContinentSection => {
+  // prettier-ignore
   const newPopulation =
-    cs.totalPopulation +
-    // 40 births per 1000 per year, 0.65 + 0.5 ratio between births/deaths
-    Math.floor(((0.65 - Math.random()) * 40 * cs.totalPopulation) / 1000 / 365)
-  const newHappiness = cs.happiness + cs.happinessDelta / 365
-  return { ...cs, totalPopulation: newPopulation, happiness: newHappiness }
+    cs.totalPopulation
+      + ((cs.totalPopulation * cs.birthRate / 1000) // births
+      - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
+      - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
+      - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
+    / 365) // calculate subtotal per day instead of year
+  const birthRate = cs.birthRate + cs.birthRateDelta / 365
+  const happiness = cs.happiness + cs.happinessDelta / 365
+
+  return { ...cs, totalPopulation: newPopulation, birthRate, happiness }
+}
+
+const calculateEmigrations = (gs: GameState): GameState => {
+  // TODO
+  return gs
 }
 
 function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
@@ -228,9 +239,8 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   // Selection box texts
   const continent = selectedContinent(state, mouseBuffer)
   if (continent) {
-    console.log('continent selected!')
-    const selectionText = JSON.stringify(continent, null, 2)
-    drawMultilineText(selectionText, 1400 + 10, 10 + strokeOffset, 200)
+    const selectionText = continentSelectionText(continent)
+    drawMultilineText(selectionText, 1400 + 10, 10 + strokeOffset, 180)
   }
 
   // date and speed
@@ -353,6 +363,24 @@ const selectedContinent = (
 ): ContinentSection | undefined => {
   return state.continentSections.find(cs =>
     isWithinRectangle([mouseBuffer.lastMouseX, mouseBuffer.lastMouseY], cs.xywh)
+  )
+}
+
+const continentSelectionText = (cs: ContinentSection): string => {
+  return JSON.stringify(
+    {
+      ...cs,
+      totalPopulation: `${
+        Math.floor(cs.totalPopulation / 100000) / 10
+      } million`,
+    },
+    (key, val) =>
+      typeof val === 'number'
+        ? val > 10
+          ? val.toFixed(0)
+          : val.toFixed(2)
+        : val,
+    1
   )
 }
 
