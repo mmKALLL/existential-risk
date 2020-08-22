@@ -57,7 +57,7 @@ const initialContinents = (): ContinentSection[] => [
     name: 'Asia',
     totalPopulation: 4641054775 - 144386830, // Subtract Russia as it became its own continent
     neighbors: ['Africa', 'Australia', 'Europe', 'North America', 'Russia'],
-    xywh: [800, 310, 360, 250],
+    xywh: [800, 315, 360, 245],
   },
   {
     name: 'Europe',
@@ -99,7 +99,7 @@ const initialContinents = (): ContinentSection[] => [
     name: 'Russia',
     totalPopulation: 144386830,
     neighbors: ['Asia', 'Europe', 'North America'],
-    xywh: [770, 170, 550, 140],
+    xywh: [770, 170, 550, 145],
   },
 ]
 
