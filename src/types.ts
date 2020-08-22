@@ -81,12 +81,13 @@ export type MouseBuffer = {
  * Initializers for game state
  */
 
+// Sources for game state values in type definition.
 export const initialGameState = (): GameState => ({
   day: 0, // From 2020-01-01
   continentSections: initialContinents(),
-  co2ppm: 415.5, // co2 parts per million in atmosphere, based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
-  globalTempDiff: 0.99, // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
-  globalTempDiffDelta: 0.039, // yearly change in globalTempDiff; high temp causes unrest and finances to go down, causing emigration
+  co2ppm: 415.5,
+  globalTempDiff: 0.99,
+  globalTempDiffDelta: 0.039,
 })
 
 // Population counts based on 2020 data from: https://www.worldometers.info/geography/7-continents/
@@ -148,7 +149,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 78.6,
     lifeExpectancyDelta: 0.23,
     happiness: 6.5845398902, // Average from 2020 medians: Northern: 7.504499912, Central: 6.215499878, Eastern: 5.949999809, Southern: 6.15899992, Western: 7.093699932,
-    happinessGrowth: 0.106840016,
+    happinessGrowth: 0.076499975,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -168,8 +169,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.24,
     lifeExpectancy: 79.2,
     lifeExpectancyDelta: 0.03,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 7.0858500005,
+    happinessGrowth: -0.0376,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -189,8 +190,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.32,
     lifeExpectancy: 75.1,
     lifeExpectancyDelta: -0.02,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 6.304800034,
+    happinessGrowth: -0.053,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -210,8 +211,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.261,
     lifeExpectancy: 73.6,
     lifeExpectancyDelta: 0.37,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 6.163400173,
+    happinessGrowth: -0.021,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -231,8 +232,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.18,
     lifeExpectancy: 71.7,
     lifeExpectancyDelta: 0.13,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 6.528499889,
+    happinessGrowth: -0.088,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -252,8 +253,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.24,
     lifeExpectancy: 83.4,
     lifeExpectancyDelta: 0.15,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 7.25210001,
+    happinessGrowth: -0.006,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
@@ -273,8 +274,8 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: 0.16,
     lifeExpectancy: 71.5,
     lifeExpectancyDelta: 0.28,
-    happiness: 0,
-    happinessGrowth: 0,
+    happiness: 5.546000004,
+    happinessGrowth: -0.034,
     foodIndex: 0,
     financeIndex: 0,
     educationIndex: 0,
