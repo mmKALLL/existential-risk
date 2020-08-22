@@ -171,7 +171,8 @@ function drawContinents(state: GameState) {
 }
 
 function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
-  const strokeOffset = constants.topPanelBorderWidth / 2
+  const strokeWidth = constants.topPanelBorderWidth
+  const strokeOffset = strokeWidth / 2
   const drawTopBarComponentBorder = (
     rightEdgeX: number,
     width: number,
@@ -193,7 +194,7 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   ctx.beginPath()
 
   // Top panel
-  drawTopBarComponentBorder(1600, 1600 - strokeOffset * 2, 55)
+  drawTopBarComponentBorder(1600, 1600 - strokeWidth, 55)
 
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
@@ -210,7 +211,7 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   )
 
   // Selection box. Starts from far right edge
-  drawTopBarComponentBorder(1600, 200, 900 - strokeOffset * 4)
+  drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
 
   // Selection box texts
 
@@ -227,7 +228,8 @@ function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
       .reverse()
       .join(''),
     10 + strokeOffset,
-    10 + strokeOffset + constants.lineHeight
+    10 + strokeOffset,
+    400
   )
 
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
