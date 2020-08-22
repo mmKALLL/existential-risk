@@ -30,7 +30,7 @@ export type ContinentSection = {
   lifeExpectancy: number // years; this, disease, and conflict causes daily deaths. Can increase from high tech/finance
   lifeExpectancyDelta: number // acceleration of life expectancy per year; increased by tech improvements
   GDPCapita: number // GDP per capita as of 2019, in international PPP adjusted dollars
-  GDPCapitaMultiplier: number // annual multiplier for GDP in percent (e.g. 1.03 for 3% increase, 0.84 for 16% decrease)
+  GDPCapitaMultiplier: number // annual multiplier for GDP in percent (e.g. 0.03 for 3% increase, -0.16 for 16% decrease)
 
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
   happinessDelta: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
@@ -119,7 +119,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 63.2,
     lifeExpectancyDelta: 0.46,
     GDPCapita: 1930,
-    GDPCapitaMultiplier: 1.036,
+    GDPCapitaMultiplier: 0.036,
     happiness: 4.571100235,
     happinessDelta: 0.0304200469,
     foodIndex: 7.1,
@@ -142,7 +142,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 73.6,
     lifeExpectancyDelta: 0.27,
     GDPCapita: 7350,
-    GDPCapitaMultiplier: 1.061,
+    GDPCapitaMultiplier: 0.061,
     happiness: 5.384300232, // Median from 2020. 2015 data medians: Southeast: 5.353499889, South: 4.75415659, East: 5.789672375
     happinessDelta: 0.017038122,
     foodIndex: 8.4,
@@ -165,7 +165,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 78.6,
     lifeExpectancyDelta: 0.23,
     GDPCapita: 29410,
-    GDPCapitaMultiplier: 1.027,
+    GDPCapitaMultiplier: 0.027,
     happiness: 6.5845398902, // Average from 2020 medians: Northern: 7.504499912, Central: 6.215499878, Eastern: 5.949999809, Southern: 6.15899992, Western: 7.093699932,
     happinessDelta: 0.076499975,
     foodIndex: 9.7,
@@ -188,7 +188,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 79.2,
     lifeExpectancyDelta: 0.03,
     GDPCapita: 49240,
-    GDPCapitaMultiplier: 1.024,
+    GDPCapitaMultiplier: 0.024,
     happiness: 7.0858500005,
     happinessDelta: -0.0376,
     foodIndex: 9.52,
@@ -211,7 +211,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 75.1,
     lifeExpectancyDelta: -0.02,
     GDPCapita: 21363,
-    GDPCapitaMultiplier: 1.027,
+    GDPCapitaMultiplier: 0.027,
     happiness: 6.304800034,
     happinessDelta: -0.053,
     foodIndex: 90.6,
@@ -234,7 +234,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 73.6,
     lifeExpectancyDelta: 0.37,
     GDPCapita: 8560,
-    GDPCapitaMultiplier: 1.012,
+    GDPCapitaMultiplier: 0.012,
     happiness: 6.163400173,
     happinessDelta: -0.021,
     foodIndex: 91.2,
@@ -257,7 +257,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 71.7,
     lifeExpectancyDelta: 0.13,
     GDPCapita: 32000,
-    GDPCapitaMultiplier: 1.01,
+    GDPCapitaMultiplier: 0.01,
     happiness: 6.528499889,
     happinessDelta: -0.088,
     foodIndex: 91.0,
@@ -280,7 +280,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 83.4,
     lifeExpectancyDelta: 0.15,
     GDPCapita: 53220,
-    GDPCapitaMultiplier: 1.027,
+    GDPCapitaMultiplier: 0.027,
     happiness: 7.25210001,
     happinessDelta: -0.006,
     foodIndex: 8.4, // Rough estimate; PNG has GHI 29.7 (very serious), others 5-10. Took average and subtracted from 100, then divided by 10.
@@ -303,7 +303,7 @@ const initialContinents = (): ContinentSection[] => [
     lifeExpectancy: 71.5,
     lifeExpectancyDelta: 0.28,
     GDPCapita: 30820,
-    GDPCapitaMultiplier: 1.025,
+    GDPCapitaMultiplier: 0.025,
     happiness: 5.546000004,
     happinessDelta: -0.034,
     foodIndex: 93.9,
