@@ -334,6 +334,35 @@ const isPacificConnection = (
   (name1 === 'North America' && (name2 === 'Asia' || name2 === 'Russia')) ||
   (name2 === 'North America' && (name1 === 'Asia' || name1 === 'Russia'))
 
+const selectedContinent = (
+  state: GameState,
+  mouseBuffer: MouseBuffer
+): ContinentSection | undefined => {
+  return state.continentSections.find(cs =>
+    isWithinRectangle([mouseBuffer.lastMouseX, mouseBuffer.lastMouseY], cs.xywh)
+  )
+}
+
+// Check if the point's x-y is between the rectangle's corners
+const isWithinRectangle = (point: Point, rect: Rectangle) => {
+  return (
+    point[0] > rect[0] &&
+    point[1] > rect[1] &&
+    point[0] < rect[0] + rect[2] && // x + width
+    point[1] < rect[1] + rect[3] // y + height
+  )
+}
+
+// Used for checking if a point lies within a convex.
+const isRightFromEdge = (
+  point: Point,
+  edgeStart: Point,
+  edgeEnd: Point
+): boolean => {
+  // const D = (x2 - x1) * (yp - y1) - (xp - x1) * (y2 - y1)
+  return true // true if and only if D < 0
+}
+
 /**
  * Start loading the images
  */
