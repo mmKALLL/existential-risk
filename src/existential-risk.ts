@@ -76,13 +76,19 @@ function startGame() {
  */
 
 function advanceDay(gs: GameState): GameState {
-  return {
+  let nextState = {
     ...gs,
     day: gs.day + 1,
+    co2ppm: gs.co2ppm + gs.co2ppmDelta / 365,
+    globalTempDiff: gs.globalTempDiff + gs.globalTempDiffDelta / 365,
     continentSections: gs.continentSections.map(cs =>
       updateContinentSection(gs, cs)
     ),
   }
+
+  nextState = calculateEmigrations(nextState)
+
+  return nextState
 }
 
 const updateContinentSection = (
