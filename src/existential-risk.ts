@@ -114,43 +114,57 @@ function drawContinents(state: GameState) {
 }
 
 function drawUIComponents(mouseBuffer: MouseBuffer) {
-  ctx.strokeStyle = '#000'
+  const strokeOffset = constants.topPanelBorderWidth / 2
+  const drawTopBarComponentBorder = (
+    rightEdgeX: number,
+    width: number,
+    height: number
+  ) => {
+    ctx.beginPath()
+    usePanelBorder()
+    const rect: Rectangle = [
+      rightEdgeX - width - strokeOffset,
+      strokeOffset,
+      width,
+      height,
+    ]
+    ctx.clearRect(...rect)
+    ctx.rect(...rect)
+    ctx.stroke()
+  }
+
   ctx.beginPath()
 
-  let width, height, strokeOffset
-
   // Top panel
-  ctx.lineWidth = 8
-  width = 1600
-  height = 50
-  strokeOffset = ctx.lineWidth / 2
-  ctx.clearRect(1400 - width - strokeOffset, strokeOffset, width, height)
-  ctx.rect(1400 - width - strokeOffset, strokeOffset, width, height)
+  drawTopBarComponentBorder(1600, 1600, 50)
 
-  // Top-right status box
-  ctx.lineWidth = 8
-  width = 350
-  height = 150
-  strokeOffset = ctx.lineWidth / 2
-  ctx.clearRect(1400 - width - strokeOffset, strokeOffset, width, height)
-  ctx.rect(1400 - width - strokeOffset, strokeOffset, width, height)
+  // Graphs and stuff? - the box. Starts from far right edge
+  drawTopBarComponentBorder(1600, 200, 900 - strokeOffset * 4)
+
+  // Top-right status box. Starts from graph box.
+  const statusBoxWidth = 350
+  const statusBoxHeight = 150
+  drawTopBarComponentBorder(1400, statusBoxWidth, statusBoxHeight)
 
   // Status box texts
-  ctx.lineWidth = 1
-  ctx.strokeText(
-    'World stats (average)',
-    1400 - width - strokeOffset + 20,
-    strokeOffset + 20,
-    width - 40
+  useText()
+  ctx.fillText(
+    'World stats (average):',
+    1400 - statusBoxWidth + 10,
+    10 + strokeOffset,
+    statusBoxWidth - 30
   )
-  ctx.stroke()
 
   // debug
-  ctx.strokeText(
+  useText()
+  ctx.fillText(
     `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`,
     10,
-    20
+    10 + strokeOffset
   )
+
+  ctx.stroke() // finish the path and draw the texts (and anything that's missing)
+}
 }
 
 /**
