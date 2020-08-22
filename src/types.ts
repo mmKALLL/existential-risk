@@ -25,6 +25,7 @@ export type ContinentSection = {
   xywh: Rectangle // position of map rectangle. x-coordinate, y-coordinate, width, height
 }
 
+export type Coordinate = { x: number; y: number }
 export type Point = [number, number] // x-coordinate, y-coordinate
 export type Rectangle = [number, number, number, number] // x-coordinate, y-coordinate, width, height
 
@@ -50,55 +51,55 @@ const initialContinents = (): ContinentSection[] => [
     name: 'Africa',
     totalPopulation: 1340598147,
     neighbors: ['Europe', 'Asia', 'South America', 'Antarctica'],
-    xywh: [500, 400, 350, 450],
+    xywh: [590, 380, 210, 280],
   },
   {
     name: 'Asia',
     totalPopulation: 4641054775 - 144386830, // Subtract Russia as it became its own continent
     neighbors: ['Africa', 'Australia', 'Europe', 'North America', 'Russia'],
-    xywh: [900, 100, 550, 450],
+    xywh: [800, 310, 360, 250],
   },
   {
     name: 'Europe',
     totalPopulation: 747636026,
     neighbors: ['Africa', 'Asia', 'North America', 'Russia'],
-    xywh: [550, 100, 400, 350],
+    xywh: [600, 200, 170, 180],
   },
   {
     name: 'North America',
     totalPopulation: 592072212,
     neighbors: ['Asia', 'Europe', 'Central America', 'Russia'],
-    xywh: [100, 50, 400, 350],
+    xywh: [130, 150, 380, 250],
   },
   {
     name: 'Central America',
     totalPopulation: 430759766,
     neighbors: ['North America', 'South America'],
-    xywh: [300, 500, 350, 400],
+    xywh: [200, 400, 200, 90],
   },
   {
     name: 'South America',
     totalPopulation: 430759766,
     neighbors: ['Africa', 'Central America', 'Antarctica'],
-    xywh: [300, 500, 350, 400],
+    xywh: [350, 490, 170, 270],
   },
   {
     name: 'Antarctica',
     totalPopulation: 2687,
     neighbors: ['Africa', 'South America'],
-    xywh: [50, 800, 1250, 100],
+    xywh: [100, 800, 1180, 97],
   },
   {
     name: 'Australia',
     totalPopulation: 42677813,
     neighbors: ['Asia'],
-    xywh: [1100, 550, 300, 150],
+    xywh: [1050, 560, 230, 150],
   },
   {
     name: 'Russia',
     totalPopulation: 144386830,
     neighbors: ['Asia', 'Europe', 'North America'],
-    xywh: [1100, 550, 300, 150],
+    xywh: [770, 170, 550, 140],
   },
 ]
 
