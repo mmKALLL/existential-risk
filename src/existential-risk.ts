@@ -171,10 +171,7 @@ function drawUIComponents(mouseBuffer: MouseBuffer) {
   ctx.beginPath()
 
   // Top panel
-  drawTopBarComponentBorder(1600, 1600, 50)
-
-  // Graphs and stuff? - the box. Starts from far right edge
-  drawTopBarComponentBorder(1600, 200, 900 - strokeOffset * 4)
+  drawTopBarComponentBorder(1600, 1600, 55)
 
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
@@ -183,12 +180,17 @@ function drawUIComponents(mouseBuffer: MouseBuffer) {
 
   // Status box texts
   useText()
-  ctx.fillText(
-    'World stats (average):',
+  drawMultilineText(
+    'World stats (average):\nHappiness: 100\nConfidence: 100',
     1400 - statusBoxWidth + 10,
     10 + strokeOffset,
     statusBoxWidth - 30
   )
+
+  // Selection box. Starts from far right edge
+  drawTopBarComponentBorder(1600, 200, 900 - strokeOffset * 4)
+
+  // Selection box texts
 
   // debug
   useText()
@@ -196,6 +198,14 @@ function drawUIComponents(mouseBuffer: MouseBuffer) {
     `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`,
     10,
     10 + strokeOffset
+  )
+  ctx.fillText(
+    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`
+      .split('')
+      .reverse()
+      .join(''),
+    10,
+    10 + strokeOffset + 20
   )
 
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
