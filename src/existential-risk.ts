@@ -367,6 +367,26 @@ const isRightFromEdge = (
   return true // true if and only if D < 0
 }
 
+// financeIndex = 0.0000008 x^(4.1) - 0.0000078 x^(3.5) - 0.005 x^(2.3) + 0.016 x^(2) + 0.175 x - 0.17, and 10 when x>70
+const calculateFinanceIndex = (GDPCapita: number): number => {
+  const x = GDPCapita / 1000
+  const polynomialTerm = (constant: number, coefficient: number): number =>
+    constant * Math.pow(x, coefficient)
+
+  if (x > 70) {
+    return 10.0
+  } else {
+    return (
+      polynomialTerm(0.0000008, 4.1) +
+      polynomialTerm(-0.0000078, 3.5) +
+      polynomialTerm(-0.005, 2.3) +
+      polynomialTerm(0.016, 2) +
+      polynomialTerm(0.175, 1) +
+      -0.17
+    )
+  }
+}
+
 /**
  * Start loading the images
  */

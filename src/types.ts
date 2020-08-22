@@ -35,7 +35,14 @@ export type ContinentSection = {
   happinessDelta: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
 
   foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but mass immigration and conflict greatly decreases. High values boost education. Anything less than 5 is extremely alarming; 5-8 is serious and more than 9 normal.
-  financeIndex: number // 0 to 10, level of financial freedom. Influences happiness and causes education index to grow/decrease. Exponential. 8 equals a 50k PPP$ GDP/pc
+
+  /**
+   * Finance index.
+   * Influences happiness and causes education index to grow/decrease. 4th degree polynomial. 8 equals a 40k PPP$ GDP/pc, anything beyond 70k is 10.
+   * financeIndex = 0.0000008 x^(4.1) - 0.0000078 x^(3.5) - 0.005 x^(2.3) + 0.016 x^(2) + 0.175 x - 0.17, and 10 when x>70
+   *     where x is 1/1000 of GDP per capita in international PPP adjusted dollars
+   */
+  financeIndex: number // 0 to 10, level of financial freedom
   educationIndex: number // 0 to 10, level of education. Influences tech and finance.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
   techIndex: number // 0 to 100, level of tech in the region. 8 to 10 is normal for US 2000s, 10-25 normal for US 2010s, anything beyond causes unrest and AI/nuclear threat
@@ -114,7 +121,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 4.571100235,
     happinessDelta: 0.0304200469,
     foodIndex: 7.1,
-    financeIndex: 0,
+    financeIndex: 0.2,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -137,7 +144,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 5.384300232, // Median from 2020. 2015 data medians: Southeast: 5.353499889, South: 4.75415659, East: 5.789672375
     happinessDelta: 0.017038122,
     foodIndex: 8.4,
-    financeIndex: 0,
+    financeIndex: 1.5,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -160,7 +167,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 6.5845398902, // Average from 2020 medians: Northern: 7.504499912, Central: 6.215499878, Eastern: 5.949999809, Southern: 6.15899992, Western: 7.093699932,
     happinessDelta: 0.076499975,
     foodIndex: 9.7,
-    financeIndex: 0,
+    financeIndex: 6.7,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -183,7 +190,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 7.0858500005,
     happinessDelta: -0.0376,
     foodIndex: 9.52,
-    financeIndex: 0,
+    financeIndex: 8.0,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -206,7 +213,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 6.304800034,
     happinessDelta: -0.053,
     foodIndex: 90.6,
-    financeIndex: 0,
+    financeIndex: 5.3,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -229,7 +236,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 6.163400173,
     happinessDelta: -0.021,
     foodIndex: 91.2,
-    financeIndex: 0,
+    financeIndex: 1.79,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -247,12 +254,12 @@ const initialContinents = (): ContinentSection[] => [
     birthRateDelta: -0.18,
     lifeExpectancy: 71.7,
     lifeExpectancyDelta: 0.13,
-    GDPCapita: 0,
-    GDPCapitaMultiplier: 0,
+    GDPCapita: 32000,
+    GDPCapitaMultiplier: 1.01,
     happiness: 6.528499889,
     happinessDelta: -0.088,
     foodIndex: 91.0,
-    financeIndex: 0,
+    financeIndex: 7.1,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -275,7 +282,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 7.25210001,
     happinessDelta: -0.006,
     foodIndex: 8.4, // Rough estimate; PNG has GHI 29.7 (very serious), others 5-10. Took average and subtracted from 100, then divided by 10.
-    financeIndex: 0,
+    financeIndex: 8.77,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
@@ -298,7 +305,7 @@ const initialContinents = (): ContinentSection[] => [
     happiness: 5.546000004,
     happinessDelta: -0.034,
     foodIndex: 93.9,
-    financeIndex: 0,
+    financeIndex: 6.4,
     educationIndex: 0,
     techIndex: 0,
     techIndexDelta: 0,
