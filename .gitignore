@@ -38,6 +38,9 @@ dist*/
 release/
 release*.zip
 
+# Whitelist assets in dist folder though
+!dist/assets/*
+
 # Dependency directories
 node_modules/
 jspm_packages/
