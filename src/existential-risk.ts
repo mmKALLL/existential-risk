@@ -165,7 +165,25 @@ function drawUIComponents(mouseBuffer: MouseBuffer) {
 
   ctx.stroke() // finish the path and draw the texts (and anything that's missing)
 }
+
+function useText() {
+  ctx.strokeStyle = '#101'
+  ctx.lineWidth = 1
+  ctx.textBaseline = 'top'
 }
+
+function usePanelBorder() {
+  ctx.strokeStyle = '#101'
+  ctx.lineWidth = constants.topPanelBorderWidth
+}
+
+function useContinentBorder() {
+  ctx.strokeStyle = '#101'
+  ctx.lineWidth = 2
+}
+
+const randomRGBStyle = (): string =>
+  `rgb(${255 * Math.random()},${255 * Math.random()},${255 * Math.random()})`
 
 /**
  * Utilities
