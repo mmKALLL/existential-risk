@@ -7,7 +7,7 @@ export type GameState = {
   continentSections: ContinentSection[]
   co2ppm: number // co2 parts per million in atmosphere, based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
   globalTempDiff: number // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
-  globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and finances to go down, causing emigration
+  globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and finances to go down in Africa, causing emigration
 }
 
 export type ContinentName =
@@ -56,6 +56,7 @@ export type ContinentSection = {
    */
   conflictLevel: number // float with level of conflict within the region; two parties may not have the same level (usually winning belligerent has less unrest)
 
+  globalTempDiffSensitivity: number // -5 to 5. Multiplier for happiness/finance sensitivity to climate change
   subRegions: Partial<ContinentSection[]> // unused
   neighbors: ContinentName[] // names of neighboring continents
   xywh: Rectangle // position of map rectangle. x-coordinate, y-coordinate, width, height
@@ -91,6 +92,7 @@ export const initialGameState = (): GameState => ({
 // Food index is based on Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
 // Finance index is based on median percentile of GDP, compiled from data on Our World in Data
 // Conflict level based on guesstimations and news
+// globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
 const initialContinents = (): ContinentSection[] => [
   {
     name: 'Africa',
@@ -108,6 +110,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 3.6,
     subRegions: [],
     neighbors: ['Europe', 'Asia', 'South America', 'Antarctica'],
     xywh: [590, 380, 210, 280],
@@ -128,6 +131,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 2.4,
     subRegions: [],
     neighbors: ['Africa', 'Australia', 'Europe', 'North America', 'Russia'],
     xywh: [800, 315, 360, 245],
@@ -148,6 +152,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 1.2,
     subRegions: [],
     neighbors: ['Africa', 'Asia', 'North America', 'Russia'],
     xywh: [600, 200, 170, 180],
@@ -168,6 +173,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: -0.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'Central America', 'Russia'],
     xywh: [130, 150, 380, 250],
@@ -188,6 +194,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 1.8,
     subRegions: [],
     neighbors: ['North America', 'South America'],
     xywh: [200, 400, 200, 90],
@@ -208,6 +215,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 0.7,
     subRegions: [],
     neighbors: ['Africa', 'Central America', 'Antarctica'],
     xywh: [350, 490, 170, 270],
@@ -228,6 +236,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: -1.6,
     subRegions: [],
     neighbors: ['Africa', 'South America'],
     xywh: [100, 800, 1180, 97],
@@ -248,6 +257,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: 1.1,
     subRegions: [],
     neighbors: ['Asia'],
     xywh: [1050, 560, 230, 150],
@@ -268,6 +278,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    globalTempDiffSensitivity: -4.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'North America'],
     xywh: [770, 170, 550, 145],
@@ -290,6 +301,7 @@ const continentBase: ContinentSection = {
   techIndexDelta: 0,
   diseaseIndex: 0,
   conflictLevel: 0,
+  globalTempDiffSensitivity: 0,
   subRegions: [],
   neighbors: [],
   xywh: [0, 0, 200, 200],
