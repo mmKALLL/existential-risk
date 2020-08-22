@@ -86,6 +86,7 @@ function advanceDay(gs: GameState): GameState {
   }
 
   nextState = calculateEmigrations(nextState)
+  nextState = calculateIndices(nextState)
 
   return nextState
 }
@@ -208,6 +209,20 @@ const calculateFinanceIndex = (GDPCapita: number): number => {
       -0.17
     )
   }
+}
+
+// Restrict a number between a min/max
+const clamp = (min: number, max: number, number: number): number => {
+  return Math.min(max, Math.max(min, number))
+}
+
+const sum = (array: number[]): number => {
+  return array.reduce((a, b) => a + b)
+}
+
+// Explicitly check that all inferred types are used - e.g. in a switch statement
+function assertNever(x: never): never {
+  throw new Error(`Unexpected object in assertNever:\n  ${x}`)
 }
 
 /**
