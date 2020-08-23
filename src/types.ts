@@ -4,6 +4,7 @@
 
 export type GameState = {
   day: number
+  gameSpeed: number
   globalBudget: number // Player's money reserves. Do a good job increasing happiness and you earn more.
   co2ppm: number // co2 parts per million in atmosphere. Values above 300 slightly hamper education. Values above 400 are harmful; outdoor air pollution is the world's 4th numerous killer with 4.9 deaths caused yearly. High values may boost crop productivity, though.
   co2ppmDelta: number // Increase in co2ppm per year. Based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
@@ -109,6 +110,7 @@ export type Rectangle = [number, number, number, number] // x-coordinate, y-coor
 // Sources for game state values in type definition.
 export const initialGameState = (): GameState => ({
   day: 0, // From 2020-01-01
+  gameSpeed: 1,
   globalBudget: 1.5 * Math.pow(10, 8), // start with 150M
   co2ppm: 415.5,
   co2ppmDelta: 2.85,

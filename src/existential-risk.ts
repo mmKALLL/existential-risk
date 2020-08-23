@@ -159,13 +159,13 @@ const setupCanvas = () => {
  */
 
 function startGame() {
-  const timePerFrame = 1000 / constants.FPS
-  const nextDayMillis = (timeAfterAdvanceMillis: number): number =>
-    constants.yearLengthMillis / 365 - timeAfterAdvanceMillis
-  let timeUntilDayAdvance = nextDayMillis(0)
-
   let gs: GameState = initialGameState() // Game state
   let clickedButtons: UIButton[] = []
+
+  const timePerFrame = 1000 / constants.FPS
+  const nextDayMillis = (timeAfterAdvanceMillis: number): number =>
+    constants.yearLengthMillis / 365 / gs.gameSpeed - timeAfterAdvanceMillis
+  let timeUntilDayAdvance = nextDayMillis(0)
 
   setInterval(() => {
     // Perform button events on current state
@@ -183,11 +183,13 @@ function startGame() {
       clickedButtons = []
     }
 
-    // Advance state when day changes
-    timeUntilDayAdvance -= timePerFrame
-    if (timeUntilDayAdvance < 0) {
-      timeUntilDayAdvance = nextDayMillis(timeUntilDayAdvance)
-      gs = advanceDay(gs)
+    // If gameSpeed > 0, advance state for day changes
+    if (gs.gameSpeed > 0) {
+      timeUntilDayAdvance -= timePerFrame
+      if (timeUntilDayAdvance < 0) {
+        timeUntilDayAdvance = nextDayMillis(timeUntilDayAdvance)
+        gs = advanceDay(gs)
+      }
     }
 
     render(gs, images)
