@@ -348,28 +348,36 @@ function assertNever(x: never): never {
  * Start loading the images
  */
 
-const loadImage = (name: string) => {
-  const image: HTMLImageElement & { ready?: boolean } = new Image()
-  image.src = 'assets/' + name + '.png'
+type LoadableImage = HTMLImageElement & { ready?: boolean }
+
+const loadImage = (name: string, format: 'png' | 'svg'): void => {
+  const image: LoadableImage = new Image()
+  image.src = 'assets/' + name + '.' + format
   image.onload = () => (image.ready = true)
-  return image
+  images[name] = image
 }
 
 function areImagesLoaded() {
   return Object.values(images).every(image => image.ready)
 }
 
-const images = {
-  continents1: loadImage('continents1'),
-  continents2: loadImage('continents2'),
-}
+const images: { [k: string]: LoadableImage } = {}
+
+loadImage('continents1', 'png')
+loadImage('continents2', 'png')
+loadImage('economy', 'svg')
+loadImage('education', 'svg')
+loadImage('finance', 'svg')
+loadImage('peacekeeper', 'svg')
+loadImage('renewable', 'svg')
+loadImage('research', 'svg')
 
 /**
  * Once images are loaded, start the game!
  */
+
 const imageLoader = setInterval(() => {
-  console.log(images.continents1.outerHTML)
-  console.log('not yet')
+  console.log('Loading images...')
   if (areImagesLoaded()) {
     console.log('OK!')
     clearInterval(imageLoader)
