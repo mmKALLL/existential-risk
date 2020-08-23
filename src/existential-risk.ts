@@ -1,13 +1,4 @@
-import {
-  initialGameState,
-  GameState,
-  Rectangle,
-  initialMouseBuffer,
-  ContinentName,
-  ContinentSection,
-  Point,
-  Coordinate,
-} from './types'
+import { initialGameState, GameState, ContinentSection } from './types'
 import { render, getContinentWithinCoordinate } from './render'
 
 /**
