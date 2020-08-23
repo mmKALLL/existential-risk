@@ -29,17 +29,15 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.org/api/addons.html) - except assets folder (used by parcel for serving static files)
 build/
-dist/
+!dist/
+dist/*
+!dist/assets/
 built/
 dist*.zip
-dist*/
 release/
 release*.zip
-
-# Whitelist assets in dist folder though
-!dist/assets/*
 
 # Dependency directories
 node_modules/
