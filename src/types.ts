@@ -6,7 +6,7 @@ export type GameState = {
   day: number
   gameSpeed: number
   globalBudget: number // Player's money reserves. Do a good job increasing happiness and you earn more.
-  co2ppm: number // co2 parts per million in atmosphere. Values above 300 slightly hamper education. Values above 400 are harmful; outdoor air pollution is the world's 4th numerous killer with 4.9 deaths caused yearly. High values may boost crop productivity, though.
+  co2ppm: number // co2 parts per million in atmosphere. Values above 300 slightly hamper education. Values above 400 are harmful; outdoor air pollution is the world's 4th numerous killer with 4.9 deaths caused yearly (around 1-2/1000). High values may boost crop productivity, though.
   co2ppmDelta: number // Increase in co2ppm per year. Based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
   globalTempDiff: number // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
   globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and decreases finances, causing emigration
@@ -61,7 +61,7 @@ export type ContinentSection = {
   financeIndex: number // 0 to 10, level of financial freedom
   educationIndex: number // 0 to 10, level of education. Influences tech and finance.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
-  techIndex: number // 0 to 100, level of tech in the region. Impacts finances and happinessDelta, as well as education. 8 to 10 is normal for US 2000s, 10-25 normal for US 2010s, anything beyond causes unrest and AI/nuclear threat
+  techIndex: number // 0 to 100, level of tech in the region. Impacts finances and happinessDelta, as well as education. 8 to 10 is normal for US 2000s, 10-15 normal for US 2010s, anything beyond 20 causes unrest and AI/nuclear threat
   techIndexDelta: number // acceleration of tech index per year
 
   // Disease causes deaths. Decreases over time as a function of education, random events cause a jump in proportion to finance index.
@@ -131,6 +131,9 @@ export const initialGameState = (): GameState => ({
 // Finance index is based on GDP, compiled from data on Our World in Data and IMF.
 // globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
 // Corruption index is based on the inverse of Corruption Perceptions Index. Dataset by Transparency International: https://www.transparency.org/en/cpi and https://www.transparency.org/en/cpi/2019/results/table
+// Education index is based on the median of EI HDI component by UN. Data aggregated from 2015 values in Wikipedia: https://en.wikipedia.org/wiki/Education_Index
+// Technology index is based on mapping from the share of population using the Internet, from Our World in Data: https://ourworldindata.org/technology-adoption
+// Disease index is based on mapped DALY counts in Burden of Disease 2017, from Our World in Data: https://ourworldindata.org/burden-of-disease
 // Conflict level based on guesstimations and news
 const initialContinents = (): ContinentSection[] => [
   {
@@ -147,10 +150,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: 0.0304200469,
     foodIndex: 7.1,
     financeIndex: 0.2,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 4.45,
+    techIndex: 4.2,
+    techIndexDelta: 0.34,
+    diseaseIndex: 13.6,
     conflictLevel: 0,
     corruptionIndex: 0.586206896,
     globalTempDiffSensitivity: 3.6,
@@ -172,10 +175,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: 0.017038122,
     foodIndex: 8.4,
     financeIndex: 1.5,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 6.87,
+    techIndex: 7.3,
+    techIndexDelta: 0.36,
+    diseaseIndex: 8.1,
     conflictLevel: 0,
     corruptionIndex: 0.528735632,
     globalTempDiffSensitivity: 2.4,
@@ -197,10 +200,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: 0.076499975,
     foodIndex: 9.7,
     financeIndex: 6.7,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 8.23,
+    techIndex: 13.6,
+    techIndexDelta: 0.34,
+    diseaseIndex: 4.2,
     conflictLevel: 0,
     corruptionIndex: 0.287356321, // Wide divide between north (0.022988505) and south (0.310344827). Decided to pick the median value.
     globalTempDiffSensitivity: 1.2,
@@ -222,10 +225,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.0376,
     foodIndex: 9.52,
     financeIndex: 8.0,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 8.95,
+    techIndex: 14.0,
+    techIndexDelta: 0.35,
+    diseaseIndex: 3.7,
     conflictLevel: 0,
     corruptionIndex: 0.16091954,
     globalTempDiffSensitivity: -0.4,
@@ -247,10 +250,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.053,
     foodIndex: 9.06,
     financeIndex: 5.3,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 6.78,
+    techIndex: 6.9,
+    techIndexDelta: 0.29,
+    diseaseIndex: 5.8,
     conflictLevel: 0,
     corruptionIndex: 0.597701149,
     globalTempDiffSensitivity: 1.8,
@@ -272,10 +275,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.021,
     foodIndex: 9.12,
     financeIndex: 1.79,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 6.72,
+    techIndex: 7.4,
+    techIndexDelta: 0.24,
+    diseaseIndex: 6.4,
     conflictLevel: 0,
     corruptionIndex: 0.505747126,
     globalTempDiffSensitivity: 0.7,
@@ -287,8 +290,8 @@ const initialContinents = (): ContinentSection[] => [
     name: 'Antarctica',
     originalPopulation: 2687,
     totalPopulation: 2687,
-    birthRate: 2.3,
-    birthRateDelta: -0.18,
+    birthRate: 1.3, // Rough calculation, based on https://en.wikipedia.org/wiki/Antarctica#Population
+    birthRateDelta: 0.024,
     lifeExpectancy: 71.7,
     lifeExpectancyDelta: 0.13,
     GDPCapita: 32000,
@@ -297,10 +300,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.088,
     foodIndex: 9.1,
     financeIndex: 7.1,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 7.84, // uses Chile's index
+    techIndex: 11, // Hardcoded default. techIndex of Antarctica can provide ways to mitigate climate change
+    techIndexDelta: 0.2,
+    diseaseIndex: 3.5,
     conflictLevel: 0,
     corruptionIndex: 0.252873563,
     globalTempDiffSensitivity: -1.6,
@@ -322,10 +325,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.006,
     foodIndex: 8.4, // Rough estimate; PNG has GHI 29.7 (very serious), others 5-10. Took average and subtracted from 100, then divided by 10.
     financeIndex: 8.77,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 7.77,
+    techIndex: 12.6, // Again, amazing disrepancy between AUS/NZ and PNG. Took average weighed by population.
+    techIndexDelta: 0.17,
+    diseaseIndex: 7.1, // 20k/100k DALY lost in AUS/NZ, 63k in PNG
     conflictLevel: 0,
     corruptionIndex: 0.057471264,
     globalTempDiffSensitivity: 1.1,
@@ -347,10 +350,10 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.034,
     foodIndex: 9.39,
     financeIndex: 6.4,
-    educationIndex: 0,
-    techIndex: 0,
-    techIndexDelta: 0,
-    diseaseIndex: 0,
+    educationIndex: 8.16,
+    techIndex: 9.2,
+    techIndexDelta: 0.28,
+    diseaseIndex: 8.1,
     conflictLevel: 0,
     corruptionIndex: 0.678160919,
     globalTempDiffSensitivity: -4.4,
