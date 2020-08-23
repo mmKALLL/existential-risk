@@ -54,7 +54,8 @@ export type ContinentSection = {
 
   /**
    * Finance index.
-   * Influences happiness and causes education index to grow/decrease. 4th degree polynomial. 8 equals a 40k PPP$ GDP/pc, anything beyond 70k is 10.
+   * Influences happiness and causes education index to grow/decrease. Lower index causes more random events like conflicts and disease to happen.
+   * 4th degree polynomial. 8 equals a 40k PPP$ GDP/pc, anything beyond 70k is 10.
    * financeIndex = 0.0000008 x^(4.1) - 0.0000078 x^(3.5) - 0.005 x^(2.3) + 0.016 x^(2) + 0.175 x - 0.17, and 10 when x>70
    *     where x is 1/1000 of GDP per capita in international PPP adjusted dollars
    */
@@ -134,7 +135,7 @@ export const initialGameState = (): GameState => ({
 // Education index is based on the median of EI HDI component by UN. Data aggregated from 2015 values in Wikipedia: https://en.wikipedia.org/wiki/Education_Index
 // Technology index is based on mapping from the share of population using the Internet, from Our World in Data: https://ourworldindata.org/technology-adoption
 // Disease index is based on mapped DALY counts in Burden of Disease 2017, from Our World in Data: https://ourworldindata.org/burden-of-disease
-// Conflict level based on guesstimations and news
+// Conflict level based on estimates from conflict death rates published by Our World in Data: https://ourworldindata.org/war-and-peace
 const initialContinents = (): ContinentSection[] => [
   {
     name: 'Africa',
@@ -154,7 +155,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 4.2,
     techIndexDelta: 0.34,
     diseaseIndex: 13.6,
-    conflictLevel: 0,
+    conflictLevel: 3.6,
     corruptionIndex: 0.586206896,
     globalTempDiffSensitivity: 3.6,
     subRegions: [],
@@ -179,7 +180,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 7.3,
     techIndexDelta: 0.36,
     diseaseIndex: 8.1,
-    conflictLevel: 0,
+    conflictLevel: 1.9,
     corruptionIndex: 0.528735632,
     globalTempDiffSensitivity: 2.4,
     subRegions: [],
@@ -204,7 +205,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 13.6,
     techIndexDelta: 0.34,
     diseaseIndex: 4.2,
-    conflictLevel: 0,
+    conflictLevel: 1.2,
     corruptionIndex: 0.287356321, // Wide divide between north (0.022988505) and south (0.310344827). Decided to pick the median value.
     globalTempDiffSensitivity: 1.2,
     subRegions: [],
@@ -229,7 +230,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 14.0,
     techIndexDelta: 0.35,
     diseaseIndex: 3.7,
-    conflictLevel: 0,
+    conflictLevel: 1.4,
     corruptionIndex: 0.16091954,
     globalTempDiffSensitivity: -0.4,
     subRegions: [],
@@ -254,7 +255,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 6.9,
     techIndexDelta: 0.29,
     diseaseIndex: 5.8,
-    conflictLevel: 0,
+    conflictLevel: 1.3,
     corruptionIndex: 0.597701149,
     globalTempDiffSensitivity: 1.8,
     subRegions: [],
@@ -279,7 +280,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 7.4,
     techIndexDelta: 0.24,
     diseaseIndex: 6.4,
-    conflictLevel: 0,
+    conflictLevel: 1.1,
     corruptionIndex: 0.505747126,
     globalTempDiffSensitivity: 0.7,
     subRegions: [],
@@ -304,7 +305,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 11, // Hardcoded default. techIndex of Antarctica can provide ways to mitigate climate change
     techIndexDelta: 0.2,
     diseaseIndex: 3.5,
-    conflictLevel: 0,
+    conflictLevel: 0.2,
     corruptionIndex: 0.252873563,
     globalTempDiffSensitivity: -1.6,
     subRegions: [],
@@ -354,7 +355,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndex: 9.2,
     techIndexDelta: 0.28,
     diseaseIndex: 8.1,
-    conflictLevel: 0,
+    conflictLevel: 0.9,
     corruptionIndex: 0.678160919,
     globalTempDiffSensitivity: -4.4,
     subRegions: [],
