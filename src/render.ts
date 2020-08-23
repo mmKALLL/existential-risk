@@ -209,6 +209,7 @@ function drawUIButtons(state: GameState) {
 
   if (clickedContinent) {
     buttons.forEach((button, i) => {
+      // Set the styling. Red border for actions that can't be afforded.
       useButtonStyle()
       const cost = button.costFunction(clickedContinent)
       if (cost <= state.globalBudget) {
@@ -216,12 +217,37 @@ function drawUIButtons(state: GameState) {
       } else {
         ctx.strokeStyle = '#D11'
       }
-      ctx.strokeRect(
-        constants.buttonLeftX + (constants.buttonSize + 8) * i,
-        10,
+
+      // Draw the button and icon
+      const x = constants.buttonLeftX + (constants.buttonSize + 8) * i
+      const y = 10
+      const buttonRect: Rectangle = [
+        x,
+        y,
         constants.buttonSize,
-        constants.buttonSize
-      )
+        constants.buttonSize,
+      ]
+      ctx.strokeRect(...buttonRect)
+      button.icon &&
+        ctx.drawImage(
+          button.icon,
+          x + 3,
+          y + 3,
+          constants.buttonSize - 6,
+          constants.buttonSize - 6
+        )
+
+      // Draw the on hover text for selected button
+      if (isWithinRectangle([state.lastMouseX, state.lastMouseY], buttonRect)) {
+        drawMultilineText(
+          `${button.name} - cost: ${formatWithMillion(cost)} USD\n    ${
+            button.description
+          }\n    ${button.additionalDescription}`,
+          constants.buttonLeftX,
+          constants.topPanelHeight + 10,
+          650
+        )
+      }
     })
   }
 }
