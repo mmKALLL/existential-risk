@@ -173,6 +173,7 @@ function advanceDay(gs: GameState): GameState {
   nextState = calculateEmigrations(nextState)
   nextState = calculateConflicts(nextState)
   nextState = calculateIndices(nextState)
+  nextState = calculateEvents(nextState)
 
   return nextState
 }
@@ -283,10 +284,25 @@ const calculateConflicts = (gs: GameState): GameState => {
   return gs
 }
 
-// once-in-a-year adjustment
+// daily adjustment to index values
 const calculateIndices = (gs: GameState): GameState => {
   // TODO: Update foodIndex, financeIndex, educationIndex, and techIndex for each CS
   // TODO: Update deltas for GS values
+  return gs
+}
+
+/**
+ * There are various large-scale events that can affect the entire world, e.g.
+ * - natural disasters (esp. earthquakes, typhoon season),
+ * - man-made disasters (global malware spread, market crash, oil tanker sinking)
+ * - COVID or other large pandemics,
+ * - sports events (esp. olympics),
+ * - a country reaching conflict > 7, causing a happiness drop and distress worldwide
+ * - introduction of online banking once a region has enough finance+tech, improving GPD and decreasing corruption
+ * -
+ */
+const calculateEvents = (gs: GameState): GameState => {
+  // TODO: Update GS news and CS happiness etc
   return gs
 }
 
