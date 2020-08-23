@@ -65,41 +65,6 @@ loadImage('research', 'svg')
 // Shown when a continent is selected in game state
 export const UIButtons: UIButton[] = [
   {
-    name: 'Economic boost',
-    description:
-      'Invest money in a region to boost their economic growth permanently.',
-    additionalDescription:
-      'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
-    icon: images.economy,
-    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 2000,
-    onClick: cs => {
-      const GDPCapitaMultiplier = cs.GDPCapitaMultiplier + 0.01
-      return { ...cs, GDPCapitaMultiplier }
-    },
-  },
-  {
-    name: 'Financial boost',
-    description: 'Provide money to a region as immediate financial relief.',
-    additionalDescription:
-      'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
-    icon: images.finance,
-    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 100000,
-    onClick: cs => {
-      const GDPCapita = cs.GDPCapita * 1.001
-      const happiness = cs.happiness + 0.1
-      const happinessDelta = cs.happinessDelta - 0.005
-      const foodIndex = cs.foodIndex + (10 - cs.foodIndex) * 0.1
-
-      return {
-        ...cs,
-        GDPCapita,
-        happiness,
-        happinessDelta,
-        foodIndex,
-      }
-    },
-  },
-  {
     name: 'Education reform',
     description: 'Provide financial aid for having more schools and teachers.',
     additionalDescription:
@@ -136,6 +101,41 @@ export const UIButtons: UIButton[] = [
     icon: images.peacekeeper,
     costFunction: cs => 0,
     onClick: gs => gs,
+  },
+  {
+    name: 'Financial boost',
+    description: 'Provide money to a region as immediate financial relief.',
+    additionalDescription:
+      'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
+    icon: images.finance,
+    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 100000,
+    onClick: cs => {
+      const GDPCapita = cs.GDPCapita * 1.001
+      const happiness = cs.happiness + 0.1
+      const happinessDelta = cs.happinessDelta - 0.005
+      const foodIndex = cs.foodIndex + (10 - cs.foodIndex) * 0.1
+
+      return {
+        ...cs,
+        GDPCapita,
+        happiness,
+        happinessDelta,
+        foodIndex,
+      }
+    },
+  },
+  {
+    name: 'Economic boost',
+    description:
+      'Invest money in a region to boost their economic growth permanently.',
+    additionalDescription:
+      'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
+    icon: images.economy,
+    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 2000,
+    onClick: cs => {
+      const GDPCapitaMultiplier = cs.GDPCapitaMultiplier + 0.01
+      return { ...cs, GDPCapitaMultiplier }
+    },
   },
 ]
 
