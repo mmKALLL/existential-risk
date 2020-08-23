@@ -3,6 +3,7 @@ import {
   GameState,
   ContinentSection,
   ContinentName,
+  UIButton,
 } from './types'
 import { render, getContinentWithinCoordinate } from './render'
 
@@ -23,6 +24,54 @@ export const constants = {
   fontSize: 14,
   lineHeight: 20,
 }
+
+// Shown when a continent is selected in game state
+export const UIButtons: UIButton[] = [
+  {
+    name: 'Economic boost',
+    description: 'Provide money to a region to boost their economic growth.',
+    additionalDescription:
+      'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
+    onClick: gs => gs,
+  },
+  {
+    name: 'Financial boost',
+    description: 'Provide money to a region as immediate financial relief.',
+    additionalDescription:
+      'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
+    onClick: gs => gs,
+  },
+  {
+    name: 'Education reform',
+    description: 'Provide financial aid for having more schools and teachers.',
+    additionalDescription:
+      'Improves education, which over time decreases birth rate and increases finance/tech.',
+    onClick: gs => gs,
+  },
+  {
+    name: 'Research grant',
+    description:
+      'Begin a series of technological research projects in the region.',
+    additionalDescription:
+      'Boosts tech level based on current education level, with long-term effects in finance, health, and happiness.',
+    onClick: gs => gs,
+  },
+  {
+    name: 'Renewable energy grant',
+    description:
+      'Provide financial stimulus for improving the energy infrastructure.',
+    additionalDescription:
+      'Short-term financial boost and long-term improvement for global warming and happiness.',
+    onClick: gs => gs,
+  },
+  {
+    name: 'Peacekeepers',
+    description: 'Send a group of peacekeepers and negotiators in the region.',
+    additionalDescription:
+      'Immediate decrease in conflict levels, providing relief in food and happiness and decreasing emigration.',
+    onClick: gs => gs,
+  },
+]
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
@@ -50,8 +99,14 @@ function startGame() {
   let timeUntilDayAdvance = nextDayMillis(0)
 
   let gs: GameState = initialGameState() // Game state
+  let clickedButtons: UIButton[] = []
 
   setInterval(() => {
+    // Perform button events on current state
+    clickedButtons.forEach(button => (gs = button.onClick(gs)))
+    clickedButtons = []
+
+    // Advance state when day changes
     timeUntilDayAdvance -= timePerFrame
     if (timeUntilDayAdvance < 0) {
       timeUntilDayAdvance = nextDayMillis(timeUntilDayAdvance)
@@ -78,7 +133,7 @@ function startGame() {
     const y = event.clientY - bound.top - canvas.clientTop
 
     if (x < constants.topPanelHeight || y > constants.mapWidth) {
-      // TODO: Handle UI button actions
+      // TODO: Add UI buttons to clickedButtons
     } else {
       // Handle map selections
       gs.selectedContinentName = getContinentWithinCoordinate(gs, [x, y])?.name
@@ -104,6 +159,7 @@ function advanceDay(gs: GameState): GameState {
   }
 
   nextState = calculateEmigrations(nextState)
+  nextState = calculateConflicts(nextState)
   nextState = calculateIndices(nextState)
 
   return nextState
@@ -114,18 +170,25 @@ const updateContinentSection = (
   cs: ContinentSection
 ): ContinentSection => {
   // prettier-ignore
-  const newPopulation =
-    clamp(
-      0, constants.maxPopulation,
-      cs.totalPopulation
-        + ((cs.totalPopulation * cs.birthRate / 1000) // births
-        - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
-        - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
-        - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
-      / 365) // calculate subtotal per day instead of year
-    )
+  const populationDelta =
+    ((cs.totalPopulation * cs.birthRate / 1000) // births
+      - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
+      - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
+      - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
+    / 365) // calculate subtotal per day instead of year
+  const newPopulation = clamp(
+    0,
+    constants.maxPopulation,
+    cs.totalPopulation + populationDelta
+  )
 
   const birthRate = clamp(0, 100, cs.birthRate + cs.birthRateDelta / 365)
+  const birthRateDelta = clamp(
+    -100,
+    100,
+    cs.birthRateDelta +
+      (-0.001 * (cs.totalPopulation / cs.originalPopulation)) / 365
+  )
   const lifeExpectancy = clamp(
     15,
     250,
@@ -186,7 +249,12 @@ const updateContinentSection = (
 }
 
 const calculateEmigrations = (gs: GameState): GameState => {
-  // TODO
+  // TODO: Emigration and immigration
+  return gs
+}
+
+const calculateConflicts = (gs: GameState): GameState => {
+  // TODO: Simulate the spread of large conflict intenationally
   return gs
 }
 
