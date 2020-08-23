@@ -228,6 +228,13 @@ function startGame() {
     event.preventDefault()
     gs.selectedContinentName = undefined
   })
+
+  // Speedup the game if numeric key is pressed
+  document.addEventListener('keydown', event => {
+    if (!isNaN(parseInt(event.key))) {
+      gs.gameSpeed = parseInt(event.key)
+    }
+  })
 }
 
 /**
