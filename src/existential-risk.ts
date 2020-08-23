@@ -71,7 +71,7 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Improves education, which over time decreases birth rate and increases finance/tech.',
     icon: images.education,
-    costFunction: cs => Math.pow(cs.educationIndex, 1.5) * 100000,
+    costFunction: cs => Math.pow(cs.educationIndex, 1.7) * 1000000,
     onClick: cs => {
       const educationIndex = cs.educationIndex + 0.3
       return { ...cs, educationIndex }
@@ -84,7 +84,7 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Boosts tech level based on current education level, with long-term effects in finance, health, and happiness.',
     icon: images.research,
-    costFunction: cs => Math.pow(cs.techIndex, 1.5) * 100000,
+    costFunction: cs => Math.pow(cs.techIndex, 2) * 400000,
     onClick: cs => {
       const techIndex = cs.techIndex + cs.educationIndex * 0.01
       const techIndexDelta = cs.techIndexDelta + cs.educationIndex * 0.01
@@ -333,9 +333,9 @@ const updateContinentSection = (
   const techIndex = cs.techIndex + cs.techIndexDelta / 365
   const techIndexDelta =
     cs.techIndexDelta
-      + (cs.techIndex / 500
+      + (cs.techIndex / 1000
       + cs.educationIndex / 30
-      - cs.conflictLevel / 30
+      - cs.conflictLevel / 20
     ) / 365 // prettier-ignore
 
   const diseaseIndex = cs.diseaseIndex // TODO
@@ -343,7 +343,7 @@ const updateContinentSection = (
   const conflictLevel =
     cs.conflictLevel
       + ((6.5 - cs.happiness) // higher happiness decreases conflict
-      - cs.conflictLevel / 2 // conflicts tend to alleviate over time
+      - cs.conflictLevel / 3 // conflicts tend to alleviate over time
     ) / 365 // prettier-ignore
   const corruptionIndex = cs.corruptionIndex + (5.7 - cs.happiness) / 20 / 365
 
