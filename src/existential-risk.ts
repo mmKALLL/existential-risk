@@ -275,38 +275,77 @@ const updateContinentSection = (
   cs: ContinentSection
 ): ContinentSection => {
   const populationRatio = cs.totalPopulation / cs.originalPopulation
-  // prettier-ignore
   const populationDelta =
     ((cs.totalPopulation * cs.birthRate / 1000) // births
       - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
       - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
       - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
-    ) / 365 // calculate subtotal per day instead of year
+    ) / 365 // prettier-ignore
 
   const newPopulation = cs.totalPopulation + populationDelta
   const birthRate = cs.birthRate + cs.birthRateDelta / 365
-  // prettier-ignore
   const birthRateDelta =
     cs.birthRateDelta
       + ((cs.happiness - 6.5) / 300 // high happiness increases birthRate over time; low reduces it. 3.5=>-0.01, 5=>-0.005, 6.5=>0, 8=>0.005, 9.5=>0.01
       // + (cs.educationIndex) // high education decreases birthRate over time
       + (0.03 * (1 - populationRatio)) // population sizes tend to try to stay similar over time. TODO: Currently linear. Ideally the following Ratio to effect: 0.6=>0.01, 0.9=>0.005, 1.1=>-0.005, 1.4=>-0.01, 1.9=>-0.015
-    ) / 365 // calculate subtotal per day instead of year
+    ) / 365 // prettier-ignore
   const lifeExpectancy = cs.lifeExpectancy + cs.lifeExpectancyDelta / 365
+  const lifeExpectancyDelta =
+    cs.lifeExpectancyDelta
+      + ((cs.happiness - 6) / 30
+      + cs.techIndexDelta / 5
+      + (5 - cs.diseaseIndex) / 10
+    ) / 365 // prettier-ignore
+
   const GDPCapita = cs.GDPCapita * (1 + cs.GDPCapitaMultiplier / 365)
-  // TODO: GDPCapitaMultiplier similar to happinessDelta
+  const GDPCapitaMultiplier =
+    cs.GDPCapitaMultiplier
+      + (cs.techIndexDelta / 10
+      - cs.corruptionIndex / 100
+    ) / 365 // prettier-ignore
 
   const happiness = cs.happiness + cs.happinessDelta / 365
-  // prettier-ignore
   const happinessDelta =
     cs.happinessDelta
       + ((populationRatio > 0.7 ? (0.8 - populationRatio ) * 0.001 : 0.004) // overpopulation effects and main happinessDelta influence
-      // TODO: add effects from conflict, finance, education, and tech
-    ) / 365
+      + cs.lifeExpectancyDelta / 20
+      + (cs.financeIndex - 4) / 200
+      + (cs.educationIndex - 6) / 200
+      + (cs.techIndex - 8) / 200
+      - (cs.techIndexDelta > 0.4 ? cs.techIndexDelta / 20 : 0) // apprehension to change from rapid advancements in technology
+      - cs.conflictLevel / 40
+      - cs.globalTempDiffSensitivity * gs.globalTempDiff / 1.5 / 100
+    ) / 365 // prettier-ignore
 
-  // increase conflict by 1/year when happiness = 5.5, 2/year when = 4.5, etc; higher happiness decreases conflict
-  const conflictLevel = cs.conflictLevel + (6.5 - happiness) / 365
+  const foodIndex =
+    cs.foodIndex
+      + (Math.min(5, cs.financeIndex - 2) / 10
+      - cs.conflictLevel / 3
+    ) / 365 // prettier-ignore
   const financeIndex = calculateFinanceIndex(GDPCapita)
+  const educationIndex =
+    cs.educationIndex
+      + ((cs.foodIndex - 8) / 20
+      + (cs.happiness - 5.5) / 10
+    ) / 365 // prettier-ignore
+
+  const techIndex = cs.techIndex + cs.techIndexDelta / 365
+  const techIndexDelta =
+    cs.techIndexDelta
+      + (cs.techIndex / 500
+      + cs.educationIndex / 30
+      - cs.conflictLevel / 30
+    ) / 365 // prettier-ignore
+
+  const diseaseIndex = cs.diseaseIndex // TODO
+
+  const conflictLevel =
+    cs.conflictLevel
+      + ((6.5 - cs.happiness) // higher happiness decreases conflict
+      - cs.conflictLevel / 2 // conflicts tend to alleviate over time
+    ) / 365 // prettier-ignore
+  const corruptionIndex = cs.corruptionIndex + (5.7 - cs.happiness) / 20 / 365
 
   // {
   //   name: 'South America',
@@ -338,14 +377,21 @@ const updateContinentSection = (
     ...cs,
     totalPopulation: newPopulation,
     birthRate,
+    birthRateDelta,
     lifeExpectancy,
+    lifeExpectancyDelta,
     GDPCapita,
+    GDPCapitaMultiplier,
     happiness,
     happinessDelta,
-
+    foodIndex,
     financeIndex,
-
+    educationIndex,
+    techIndex,
+    techIndexDelta,
+    diseaseIndex,
     conflictLevel,
+    corruptionIndex,
   }
   return clampCSValues(newCS)
 }
