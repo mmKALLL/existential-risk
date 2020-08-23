@@ -146,19 +146,14 @@ export function drawUIComponents(state: GameState) {
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
   renderSelectionBoxContents(state, strokeOffset)
 
-  // // debug
-  // useText()
-  // drawMultilineText(
-  //   `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})` +
-  //     '\n' +
-  //     `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})`
-  //       .split('')
-  //       .reverse()
-  //       .join(''),
-  //   10 + strokeOffset,
-  //   10 + strokeOffset,
-  //   400
-  // )
+  // debug
+  useText()
+  drawMultilineText(
+    `(${state.lastMouseX}, ${state.lastMouseY})`,
+    10,
+    900 - 20,
+    80
+  )
 }
 
 function renderSelectionBoxContents(state: GameState, strokeOffset: number) {
