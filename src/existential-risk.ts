@@ -70,8 +70,11 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Improves education, which over time decreases birth rate and increases finance/tech.',
     icon: images.education,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => Math.pow(cs.educationIndex, 1.5) * 100000,
+    onClick: cs => {
+      const educationIndex = cs.educationIndex + 0.3
+      return { ...cs, educationIndex }
+    },
   },
   {
     name: 'Research grant',
@@ -80,8 +83,12 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Boosts tech level based on current education level, with long-term effects in finance, health, and happiness.',
     icon: images.research,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => Math.pow(cs.techIndex, 1.5) * 100000,
+    onClick: cs => {
+      const techIndex = cs.techIndex + cs.educationIndex * 0.01
+      const techIndexDelta = cs.techIndexDelta + cs.educationIndex * 0.01
+      return { ...cs, techIndex, techIndexDelta }
+    },
   },
   {
     name: 'Renewable energy grant',
@@ -108,11 +115,11 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
     icon: images.finance,
-    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 100000,
+    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 25000,
     onClick: cs => {
-      const GDPCapita = cs.GDPCapita * 1.001
-      const happiness = cs.happiness + 0.1
-      const happinessDelta = cs.happinessDelta - 0.005
+      const GDPCapita = cs.GDPCapita * 1.00001
+      const happiness = cs.happiness + 0.15
+      const happinessDelta = cs.happinessDelta - 0.01
       const foodIndex = cs.foodIndex + (10 - cs.foodIndex) * 0.1
 
       return {
@@ -129,7 +136,7 @@ export const UIButtons: UIButton[] = [
     description:
       'Invest money in a region to boost their economic growth permanently.',
     additionalDescription:
-      'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
+      'Helps the economy grow over time, providing long-term benefits to happiness, education, and food stability.',
     icon: images.economy,
     costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 2000,
     onClick: cs => {
