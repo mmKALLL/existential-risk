@@ -5,6 +5,7 @@ import {
   ContinentName,
   UIButton,
   Rectangle,
+  clampCSValues,
 } from './types'
 import {
   render,
@@ -281,51 +282,32 @@ const updateContinentSection = (
       - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
       - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
     ) / 365 // calculate subtotal per day instead of year
-  const newPopulation = clamp(
-    0,
-    constants.maxPopulation,
-    cs.totalPopulation + populationDelta
-  )
 
-  const birthRate = clamp(0, 100, cs.birthRate + cs.birthRateDelta / 365)
+  const newPopulation = cs.totalPopulation + populationDelta
+  const birthRate = cs.birthRate + cs.birthRateDelta / 365
   // prettier-ignore
-  const birthRateDelta = clamp(
-    -10, 10,
+  const birthRateDelta =
     cs.birthRateDelta
       + ((cs.happiness - 6.5) / 300 // high happiness increases birthRate over time; low reduces it. 3.5=>-0.01, 5=>-0.005, 6.5=>0, 8=>0.005, 9.5=>0.01
       // + (cs.educationIndex) // high education decreases birthRate over time
       + (0.03 * (1 - populationRatio)) // population sizes tend to try to stay similar over time. TODO: Currently linear. Ideally the following Ratio to effect: 0.6=>0.01, 0.9=>0.005, 1.1=>-0.005, 1.4=>-0.01, 1.9=>-0.015
     ) / 365 // calculate subtotal per day instead of year
-  )
-  const lifeExpectancy = clamp(
-    15,
-    250,
-    cs.lifeExpectancy + cs.lifeExpectancyDelta / 365
-  )
-  const GDPCapita = clamp(
-    500,
-    Math.pow(10, 10),
-    cs.GDPCapita * (1 + cs.GDPCapitaMultiplier / 365)
-  )
+  const lifeExpectancy = cs.lifeExpectancy + cs.lifeExpectancyDelta / 365
+  const GDPCapita = cs.GDPCapita * (1 + cs.GDPCapitaMultiplier / 365)
   // TODO: GDPCapitaMultiplier similar to happinessDelta
 
-  const happiness = clamp(0, 10, cs.happiness + cs.happinessDelta / 365)
+  const happiness = cs.happiness + cs.happinessDelta / 365
   // prettier-ignore
   const happinessDelta =
-    clamp(-2, 2,
-      cs.happinessDelta
-        + ((populationRatio > 0.7 ? (0.8 - populationRatio ) * 0.001 : 0.004) // overpopulation effects and main happinessDelta influence
-        // TODO: add effects from conflict, finance, education, and tech
-      ) / 365
-    )
+    cs.happinessDelta
+      + ((populationRatio > 0.7 ? (0.8 - populationRatio ) * 0.001 : 0.004) // overpopulation effects and main happinessDelta influence
+      // TODO: add effects from conflict, finance, education, and tech
+    ) / 365
 
-  // prettier-ignore
-  const conflictLevel = clamp(0, 10,
-    cs.conflictLevel
-      + (6.5 - happiness) / 365 // increase conflict by 1/year when happiness = 5.5, 2/year when = 4.5, etc; higher happiness decreases conflict
-  )
-
+  // increase conflict by 1/year when happiness = 5.5, 2/year when = 4.5, etc; higher happiness decreases conflict
+  const conflictLevel = cs.conflictLevel + (6.5 - happiness) / 365
   const financeIndex = calculateFinanceIndex(GDPCapita)
+
   // {
   //   name: 'South America',
   //   originalPopulation: 430759766,
@@ -352,7 +334,7 @@ const updateContinentSection = (
   //   xywh: [350, 490, 170, 270],
   // },
 
-  return {
+  const newCS = {
     ...cs,
     totalPopulation: newPopulation,
     birthRate,
@@ -365,6 +347,7 @@ const updateContinentSection = (
 
     conflictLevel,
   }
+  return clampCSValues(newCS)
 }
 
 const calculateEmigrations = (gs: GameState): GameState => {
@@ -424,16 +407,16 @@ const calculateFinanceIndex = (GDPCapita: number): number => {
 }
 
 // Restrict a number between a min/max
-const clamp = (min: number, max: number, number: number): number => {
+export const clamp = (min: number, max: number, number: number): number => {
   return Math.min(max, Math.max(min, number))
 }
 
-const sum = (array: number[]): number => {
+export const sum = (array: number[]): number => {
   return array.reduce((a, b) => a + b)
 }
 
 // Explicitly check that all inferred types are used - e.g. in a switch statement
-function assertNever(x: never): never {
+export function assertNever(x: never): never {
   throw new Error(`Unexpected object in assertNever:\n  ${x}`)
 }
 
