@@ -169,8 +169,19 @@ function startGame() {
 
   setInterval(() => {
     // Perform button events on current state
-    clickedButtons.forEach(button => (gs = button.onClick(gs)))
-    clickedButtons = []
+    if (clickedButtons.length > 0) {
+      const selectedContinent = getSelectedContinent(gs) as ContinentSection
+      const selectedContinentIndex = gs.continentSections.indexOf(
+        selectedContinent
+      )
+      clickedButtons.forEach(button => {
+        const nextState = gs
+        const nextContinent = button.onClick(selectedContinent)
+        nextState.continentSections[selectedContinentIndex] = nextContinent
+        return nextState
+      })
+      clickedButtons = []
+    }
 
     // Advance state when day changes
     timeUntilDayAdvance -= timePerFrame
