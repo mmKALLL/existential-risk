@@ -103,8 +103,6 @@ export function drawUIComponents(state: GameState) {
     ctx.stroke()
   }
 
-  ctx.beginPath()
-
   // Top panel
   drawTopBarComponentBorder(1600, 1600 - strokeWidth, constants.topPanelHeight)
 
@@ -130,18 +128,7 @@ export function drawUIComponents(state: GameState) {
 
   // Selection box. Starts from far right edge
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
-
-  // Selection box texts
-  const continent = getSelectedContinent(state)
-  if (continent) {
-    const selectionText = continentSelectionText(continent)
-    drawMultilineText(
-      selectionText,
-      constants.mapWidth + 10,
-      10 + strokeOffset,
-      180
-    )
-  }
+  renderSelectionBoxContents(state, strokeOffset)
 
   // date and speed
   useText()
@@ -171,8 +158,20 @@ export function drawUIComponents(state: GameState) {
     10 + strokeOffset,
     400
   )
+}
 
-  ctx.stroke() // finish the path and draw the texts (and anything that's missing)
+function renderSelectionBoxContents(state: GameState, strokeOffset: number) {
+  // Selection box texts
+  const continent = getSelectedContinent(state)
+  if (continent) {
+    const selectionText = continentSelectionText(continent)
+    drawMultilineText(
+      selectionText,
+      constants.mapWidth + 10,
+      10,
+      180 // 10 pixels of padding on both sides of the panel
+    )
+  }
 }
 
 /**
@@ -262,11 +261,12 @@ const isPacificConnection = (
   )
 }
 
+// Show selected (clicked) continent, or currently hovered one if none is selected
 const getSelectedContinent = (
   state: GameState
 ): ContinentSection | undefined => {
-  if (state.selectedContinent) {
-    return state.selectedContinent
+  if (state.selectedContinentName) {
+    return getContinent(state, state.selectedContinentName)
   }
   return getContinentWithinCoordinate(state, [
     state.lastMouseX,

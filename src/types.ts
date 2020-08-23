@@ -10,7 +10,7 @@ export type GameState = {
   globalTempDiff: number // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
   globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and decreases finances, causing emigration
   continentSections: ContinentSection[]
-  selectedContinent: ContinentSection | undefined
+  selectedContinentName: ContinentName | undefined
   lastMouseX: number
   lastMouseY: number
 }
@@ -104,7 +104,7 @@ export const initialGameState = (): GameState => ({
   globalTempDiff: 0.99,
   globalTempDiffDelta: 0.039,
   continentSections: initialContinents(),
-  selectedContinent: undefined,
+  selectedContinentName: undefined,
   lastMouseX: 0,
   lastMouseY: 0,
 })

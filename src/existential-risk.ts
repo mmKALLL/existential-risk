@@ -1,4 +1,9 @@
-import { initialGameState, GameState, ContinentSection } from './types'
+import {
+  initialGameState,
+  GameState,
+  ContinentSection,
+  ContinentName,
+} from './types'
 import { render, getContinentWithinCoordinate } from './render'
 
 /**
@@ -76,7 +81,7 @@ function startGame() {
       // TODO: Handle UI button actions
     } else {
       // Handle map selections
-      gs.selectedContinent = getContinentWithinCoordinate(gs, [x, y])
+      gs.selectedContinentName = getContinentWithinCoordinate(gs, [x, y])?.name
     }
   })
 
