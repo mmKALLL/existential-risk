@@ -1,3 +1,5 @@
+import { clamp, constants } from './existential-risk'
+
 /**
  * Type definitions
  */
@@ -395,3 +397,27 @@ const continentBase: ContinentSection = {
 
 //   }), continentBase
 // )
+
+export const clampCSValues = (cs: ContinentSection): ContinentSection => {
+  return {
+    ...cs,
+    totalPopulation: clamp(0, constants.maxPopulation, cs.totalPopulation),
+    birthRate: clamp(0, 200, cs.birthRate),
+    birthRateDelta: clamp(-10, 10, cs.birthRateDelta),
+    lifeExpectancy: clamp(15, 250, cs.lifeExpectancy),
+    lifeExpectancyDelta: clamp(-10, 50, cs.lifeExpectancyDelta),
+    GDPCapita: clamp(827, Math.pow(10, 12), cs.GDPCapita),
+    GDPCapitaMultiplier: clamp(-0.4, 0.8, cs.GDPCapitaMultiplier),
+    happiness: clamp(0, 10, cs.happiness),
+    happinessDelta: clamp(-6, 6, cs.happinessDelta),
+    foodIndex: clamp(0, 10, cs.foodIndex),
+    financeIndex: clamp(0, 10, cs.financeIndex),
+    educationIndex: clamp(0, 10, cs.educationIndex),
+    techIndex: clamp(0, 100, cs.techIndex),
+    techIndexDelta: clamp(-5, 50, cs.techIndexDelta),
+    diseaseIndex: clamp(0, 100, cs.diseaseIndex),
+    conflictLevel: clamp(0, 10, cs.conflictLevel),
+    corruptionIndex: clamp(0, 1, cs.corruptionIndex),
+    globalTempDiffSensitivity: clamp(-5, 5, cs.globalTempDiffSensitivity),
+  }
+}
