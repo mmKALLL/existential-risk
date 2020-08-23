@@ -220,20 +220,13 @@ function drawUIButtons(state: GameState) {
       }
 
       // Draw the button and icon
-      const x = constants.buttonLeftX + (constants.buttonSize + 8) * i
-      const y = 10
-      const buttonRect: Rectangle = [
-        x,
-        y,
-        constants.buttonSize,
-        constants.buttonSize,
-      ]
+      const buttonRect = getButtonRect(i)
       ctx.strokeRect(...buttonRect)
       button.icon &&
         ctx.drawImage(
           button.icon,
-          x + 3,
-          y + 3,
+          buttonRect[0] + 3,
+          buttonRect[1] + 3,
           constants.buttonSize - 6,
           constants.buttonSize - 6
         )
@@ -341,7 +334,7 @@ const isPacificConnection = (
 }
 
 // Show selected (clicked) continent, or currently hovered one if none is selected
-const getSelectedContinent = (
+export const getSelectedContinent = (
   state: GameState
 ): ContinentSection | undefined => {
   if (state.selectedContinentName) {
@@ -379,8 +372,20 @@ const continentSelectionText = (cs: ContinentSection): string => {
 const formatWithMillion = (value: number) =>
   `${Math.floor(value / 100000) / 10} million`
 
+export const getButtonRect = (buttonIndex: number) => {
+  const x = constants.buttonLeftX + (constants.buttonSize + 8) * buttonIndex
+  const y = 10
+  const buttonRect: Rectangle = [
+    x,
+    y,
+    constants.buttonSize,
+    constants.buttonSize,
+  ]
+  return buttonRect
+}
+
 // Check if the point's x-y is between the rectangle's corners
-const isWithinRectangle = (point: Point, rect: Rectangle) => {
+export const isWithinRectangle = (point: Point, rect: Rectangle) => {
   return (
     point[0] > rect[0] &&
     point[1] > rect[1] &&
