@@ -202,22 +202,32 @@ function startGame() {
     gs.lastMouseY = event.clientY - bound.top - canvas.clientTop
   })
 
-  // On left click store selected continent in game state (clicking outside any continent but within map clears selection)
+  // On left click handle map selection and taking actions
   canvas.addEventListener('mousedown', event => {
     const bound = canvas.getBoundingClientRect()
 
     const x = event.clientX - bound.left - canvas.clientLeft
     const y = event.clientY - bound.top - canvas.clientTop
 
+    // Buffer an action from UIButton
     if (y < constants.topPanelHeight || x > constants.mapWidth) {
-      // TODO: Add UI buttons to clickedButtons
+      UIButtons.forEach((button, i) => {
+        const buttonRect = getButtonRect(i)
+        if (isWithinRectangle([gs.lastMouseX, gs.lastMouseY], buttonRect)) {
+          clickedButtons.push(button)
+        }
+      })
     } else {
       // Handle map selections
       gs.selectedContinentName = getContinentWithinCoordinate(gs, [x, y])?.name
     }
   })
 
-  // Also clear selection on right click
+  // Clear continent selection on right click
+  canvas.addEventListener('contextmenu', event => {
+    event.preventDefault()
+    gs.selectedContinentName = undefined
+  })
 }
 
 /**
