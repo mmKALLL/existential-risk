@@ -6,7 +6,7 @@ import {
   Rectangle,
   Coordinate,
 } from './types'
-import { constants } from './existential-risk'
+import { constants, UIButtons } from './existential-risk'
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
@@ -120,12 +120,15 @@ export function drawUIComponents(state: GameState) {
     400
   )
 
+  drawUIButtons(state)
+
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
   const statusBoxHeight = 150
   drawTopBarComponentBorder(constants.mapWidth, statusBoxWidth, statusBoxHeight)
 
   // Status box texts
+  useText()
   drawMultilineText(
     'World stats (average):\nHappiness: 100\nConfidence: 100',
     constants.mapWidth - statusBoxWidth + 10,
@@ -195,6 +198,39 @@ function drawMultilineText(
   ctx.stroke()
 }
 
+function drawUIButtons(state: GameState) {
+  if (state.selectedContinentName === undefined) {
+    drawMultilineText(
+      'Click on a continent to open actions.',
+      constants.buttonLeftX,
+      10,
+      400
+    )
+    return
+  }
+
+  const clickedContinent = getContinent(state, state.selectedContinentName)
+  const buttons = UIButtons
+
+  if (clickedContinent) {
+    buttons.forEach((button, i) => {
+      useButtonStyle()
+      const cost = button.costFunction(clickedContinent)
+      if (cost <= state.globalBudget) {
+        ctx.strokeStyle = '#1D1'
+      } else {
+        ctx.strokeStyle = '#D11'
+      }
+      ctx.strokeRect(
+        constants.buttonLeftX + (constants.buttonSize + 8) * i,
+        10,
+        constants.buttonSize,
+        constants.buttonSize
+      )
+    })
+  }
+}
+
 function useText() {
   ctx.strokeStyle = '#101'
   ctx.lineWidth = 1
@@ -208,6 +244,11 @@ function usePanelBorder() {
 }
 
 function useContinentBorder() {
+  ctx.strokeStyle = '#101'
+  ctx.lineWidth = 2
+}
+
+function useButtonStyle() {
   ctx.strokeStyle = '#101'
   ctx.lineWidth = 2
 }

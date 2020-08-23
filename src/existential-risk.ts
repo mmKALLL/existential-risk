@@ -23,6 +23,8 @@ export const constants = {
   topPanelBorderWidth: 4,
   fontSize: 14,
   lineHeight: 20,
+  buttonLeftX: 350,
+  buttonSize: 40,
 }
 
 /**
