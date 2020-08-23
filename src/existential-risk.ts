@@ -22,6 +22,7 @@ export const constants = {
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
+// Set up the pixel ratio. Super important for getting sharp canvas output on high-DPI displays.
 const setupCanvas = () => {
   const width = canvas.width
   const height = canvas.height
