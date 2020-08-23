@@ -11,6 +11,8 @@ export type GameState = {
   globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and decreases finances, causing emigration
   continentSections: ContinentSection[]
   selectedContinent: ContinentSection | undefined
+  lastMouseX: number
+  lastMouseY: number
 }
 
 export type ContinentName =
@@ -82,12 +84,12 @@ export type Coordinate = { x: number; y: number }
 export type Point = [number, number] // x-coordinate, y-coordinate
 export type Rectangle = [number, number, number, number] // x-coordinate, y-coordinate, width, height
 
-export type MouseBuffer = {
-  lastMouseX: number
-  lastMouseY: number
-  click: Point | undefined
-  rightClick: Point | undefined // unused; avoid if possible
-}
+// export type MouseBuffer = {
+//   lastMouseX: number
+//   lastMouseY: number
+//   click: Point | undefined
+//   rightClick: Point | undefined // unused; avoid if possible
+// }
 
 /**
  * Initializers for game state
@@ -103,6 +105,8 @@ export const initialGameState = (): GameState => ({
   globalTempDiffDelta: 0.039,
   continentSections: initialContinents(),
   selectedContinent: undefined,
+  lastMouseX: 0,
+  lastMouseY: 0,
 })
 
 // Population counts based on 2020 data from: https://www.worldometers.info/geography/7-continents/
@@ -353,10 +357,3 @@ const continentBase: ContinentSection = {
 
 //   }), continentBase
 // )
-
-export const initialMouseBuffer = (): MouseBuffer => ({
-  lastMouseX: 0,
-  lastMouseY: 0,
-  click: undefined,
-  rightClick: undefined,
-})

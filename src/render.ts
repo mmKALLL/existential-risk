@@ -1,6 +1,5 @@
 import {
   GameState,
-  MouseBuffer,
   ContinentName,
   ContinentSection,
   Point,
@@ -16,15 +15,11 @@ const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
  * Drawing functions
  */
 
-export function render(
-  state: GameState,
-  mouseBuffer: MouseBuffer,
-  images: any
-) {
+export function render(state: GameState, images: any) {
   clearCanvas()
   drawBackground(images)
   drawContinents(state)
-  drawUIComponents(state, mouseBuffer)
+  drawUIComponents(state)
 }
 
 export function clearCanvas() {
@@ -87,7 +82,7 @@ export function drawContinents(state: GameState) {
   })
 }
 
-export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
+export function drawUIComponents(state: GameState) {
   const strokeWidth = constants.topPanelBorderWidth
   const strokeOffset = strokeWidth / 2
   const drawTopBarComponentBorder = (
@@ -137,7 +132,7 @@ export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
 
   // Selection box texts
-  const continent = getSelectedContinent(state, mouseBuffer)
+  const continent = getSelectedContinent(state)
   if (continent) {
     const selectionText = continentSelectionText(continent)
     drawMultilineText(
@@ -166,9 +161,9 @@ export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   // debug
   useText()
   drawMultilineText(
-    `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})` +
+    `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})` +
       '\n' +
-      `Mouse point: (${mouseBuffer.lastMouseX}, ${mouseBuffer.lastMouseY})`
+      `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})`
         .split('')
         .reverse()
         .join(''),
@@ -249,7 +244,7 @@ const continentMidCoordinate = (
 const getContinent = (state: GameState, name: ContinentName) =>
   state.continentSections.find(cs => cs.name === name)
 
-const getContinentWithinCoordinate = (
+export const getContinentWithinCoordinate = (
   state: GameState,
   point: Point
 ): ContinentSection | undefined => {
@@ -268,15 +263,14 @@ const isPacificConnection = (
 }
 
 const getSelectedContinent = (
-  state: GameState,
-  mouseBuffer: MouseBuffer
+  state: GameState
 ): ContinentSection | undefined => {
   if (state.selectedContinent) {
     return state.selectedContinent
   }
   return getContinentWithinCoordinate(state, [
-    mouseBuffer.lastMouseX,
-    mouseBuffer.lastMouseY,
+    state.lastMouseX,
+    state.lastMouseY,
   ])
 }
 

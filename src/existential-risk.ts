@@ -2,14 +2,13 @@ import {
   initialGameState,
   GameState,
   Rectangle,
-  MouseBuffer,
   initialMouseBuffer,
   ContinentName,
   ContinentSection,
   Point,
   Coordinate,
 } from './types'
-import { render } from './render'
+import { render, getContinentWithinCoordinate } from './render'
 
 /**
  * Constants
@@ -54,7 +53,6 @@ function startGame() {
   let timeUntilDayAdvance = nextDayMillis(0)
 
   let gs: GameState = initialGameState() // Game state
-  const mouseBuffer: MouseBuffer = initialMouseBuffer()
 
   setInterval(() => {
     timeUntilDayAdvance -= timePerFrame
@@ -63,9 +61,7 @@ function startGame() {
       gs = advanceDay(gs)
     }
 
-    handleMouseEvents(gs, mouseBuffer)
-
-    render(gs, mouseBuffer, images)
+    render(gs, images)
   }, timePerFrame)
 
   // Event handlers
@@ -73,8 +69,8 @@ function startGame() {
   canvas.addEventListener('mousemove', event => {
     const bound = canvas.getBoundingClientRect()
 
-    mouseBuffer.lastMouseX = event.clientX - bound.left - canvas.clientLeft
-    mouseBuffer.lastMouseY = event.clientY - bound.top - canvas.clientTop
+    gs.lastMouseX = event.clientX - bound.left - canvas.clientLeft
+    gs.lastMouseY = event.clientY - bound.top - canvas.clientTop
   })
 
   // On left click store selected continent in game state (clicking outside any continent but within map clears selection)
@@ -84,7 +80,12 @@ function startGame() {
     const x = event.clientX - bound.left - canvas.clientLeft
     const y = event.clientY - bound.top - canvas.clientTop
 
-    x < constants.topPanelHeight || y > constants.mapWidth
+    if (x < constants.topPanelHeight || y > constants.mapWidth) {
+      // TODO: Handle UI button actions
+    } else {
+      // Handle map selections
+      gs.selectedContinent = getContinentWithinCoordinate(gs, [x, y])
+    }
   })
 
   // Also clear selection on right click
@@ -197,14 +198,6 @@ const calculateIndices = (gs: GameState): GameState => {
   // TODO: Update foodIndex, financeIndex, educationIndex, and techIndex for each CS
   // TODO: Update deltas for GS values
   return gs
-}
-
-function handleMouseEvents(gs: GameState, mouseBuffer: MouseBuffer) {
-  // TODO
-
-  // Cleanup
-  mouseBuffer.click = undefined
-  mouseBuffer.rightClick = undefined
 }
 
 /**
