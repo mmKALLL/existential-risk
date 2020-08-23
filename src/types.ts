@@ -46,7 +46,7 @@ export type ContinentSection = {
   GDPCapitaMultiplier: number // annual multiplier for GDP in percent (e.g. 0.03 for 3% increase, -0.16 for 16% decrease)
 
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
-  happinessDelta: number // Acceleration of happiness per year; influenced by conflict, finance, education, and tech
+  happinessDelta: number // Acceleration of happiness per year; influenced by overpopulation, conflict, finance, education, and tech
 
   foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but mass immigration and conflict greatly decreases. High values boost education. Anything less than 5 is extremely alarming; 5-8 is serious and more than 9 normal.
 
@@ -359,7 +359,7 @@ const initialContinents = (): ContinentSection[] => [
 const continentBase: ContinentSection = {
   name: 'Europe',
   originalPopulation: 0,
-    totalPopulation: 0,
+  totalPopulation: 0,
   birthRate: 0,
   birthRateDelta: 0,
   lifeExpectancy: 0,

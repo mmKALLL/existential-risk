@@ -169,13 +169,14 @@ const updateContinentSection = (
   gs: GameState,
   cs: ContinentSection
 ): ContinentSection => {
+  const populationRatio = cs.totalPopulation / cs.originalPopulation
   // prettier-ignore
   const populationDelta =
     ((cs.totalPopulation * cs.birthRate / 1000) // births
       - (cs.totalPopulation / cs.lifeExpectancy) // natural deaths
       - (cs.totalPopulation / 10000 * Math.pow(2.3, cs.conflictLevel)) // deaths from conflicts - 1/10000 per year for conflict level 1, 1/10 per year for conflict level 8
       - (cs.totalPopulation / 1000 * Math.pow(cs.diseaseIndex / 5, 2))  // deaths from disease - index 10 => 4/1000 per year, 20 => 16/1000, 30 => 36/1000, 50 => 100/1000, 100 => 400/1000
-    / 365) // calculate subtotal per day instead of year
+    ) / 365 // calculate subtotal per day instead of year
   const newPopulation = clamp(
     0,
     constants.maxPopulation,
@@ -183,11 +184,14 @@ const updateContinentSection = (
   )
 
   const birthRate = clamp(0, 100, cs.birthRate + cs.birthRateDelta / 365)
+  // prettier-ignore
   const birthRateDelta = clamp(
-    -100,
-    100,
-    cs.birthRateDelta +
-      (-0.001 * (cs.totalPopulation / cs.originalPopulation)) / 365
+    -10, 10,
+    cs.birthRateDelta
+      + ((cs.happiness - 6.5) / 300 // high happiness increases birthRate over time; low reduces it. 3.5=>-0.01, 5=>-0.005, 6.5=>0, 8=>0.005, 9.5=>0.01
+      // + (cs.educationIndex) // high education decreases birthRate over time
+      + (0.03 * (1 - populationRatio)) // population sizes tend to try to stay similar over time. TODO: Currently linear. Ideally the following Ratio to effect: 0.6=>0.01, 0.9=>0.005, 1.1=>-0.005, 1.4=>-0.01, 1.9=>-0.015
+    ) / 365 // calculate subtotal per day instead of year
   )
   const lifeExpectancy = clamp(
     15,
@@ -199,8 +203,17 @@ const updateContinentSection = (
     Math.pow(10, 10),
     cs.GDPCapita * (1 + cs.GDPCapitaMultiplier / 365)
   )
+  // TODO: GDPCapitaMultiplier similar to happinessDelta
+
   const happiness = clamp(0, 10, cs.happiness + cs.happinessDelta / 365)
-  const happinessDelta = cs.happinessDelta // TODO
+  // prettier-ignore
+  const happinessDelta =
+    clamp(-2, 2,
+      cs.happinessDelta
+        + ((populationRatio > 0.7 ? (0.8 - populationRatio ) * 0.001 : 0.004) // overpopulation effects and main happinessDelta influence
+        // TODO: add effects from conflict, finance, education, and tech
+      ) / 365
+    )
 
   // prettier-ignore
   const conflictLevel = clamp(0, 10,
