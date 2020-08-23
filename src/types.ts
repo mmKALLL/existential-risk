@@ -21,7 +21,7 @@ export type UIButton = {
   additionalDescription: string // second line with what its action influences in the long term, full sentence
   icon?: HTMLImageElement // Square, will be resized to ~28x28
   costFunction: (cs: ContinentSection) => number
-  onClick: (gs: GameState) => GameState
+  onClick: (cs: ContinentSection) => ContinentSection // update the CS
 }
 
 export type ContinentName =
@@ -109,7 +109,7 @@ export type Rectangle = [number, number, number, number] // x-coordinate, y-coor
 // Sources for game state values in type definition.
 export const initialGameState = (): GameState => ({
   day: 0, // From 2020-01-01
-  globalBudget: Math.pow(10, 8), // start with 100M
+  globalBudget: 1.5 * Math.pow(10, 8), // start with 150M
   co2ppm: 415.5,
   co2ppmDelta: 2.85,
   globalTempDiff: 0.99,
@@ -243,7 +243,7 @@ const initialContinents = (): ContinentSection[] => [
     GDPCapitaMultiplier: 0.027,
     happiness: 6.304800034,
     happinessDelta: -0.053,
-    foodIndex: 90.6,
+    foodIndex: 9.06,
     financeIndex: 5.3,
     educationIndex: 0,
     techIndex: 0,
@@ -268,7 +268,7 @@ const initialContinents = (): ContinentSection[] => [
     GDPCapitaMultiplier: 0.012,
     happiness: 6.163400173,
     happinessDelta: -0.021,
-    foodIndex: 91.2,
+    foodIndex: 9.12,
     financeIndex: 1.79,
     educationIndex: 0,
     techIndex: 0,
@@ -293,7 +293,7 @@ const initialContinents = (): ContinentSection[] => [
     GDPCapitaMultiplier: 0.01,
     happiness: 6.528499889,
     happinessDelta: -0.088,
-    foodIndex: 91.0,
+    foodIndex: 9.1,
     financeIndex: 7.1,
     educationIndex: 0,
     techIndex: 0,
@@ -343,7 +343,7 @@ const initialContinents = (): ContinentSection[] => [
     GDPCapitaMultiplier: 0.025,
     happiness: 5.546000004,
     happinessDelta: -0.034,
-    foodIndex: 93.9,
+    foodIndex: 9.39,
     financeIndex: 6.4,
     educationIndex: 0,
     techIndex: 0,
