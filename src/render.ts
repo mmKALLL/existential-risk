@@ -275,13 +275,12 @@ const getSelectedContinent = (
 }
 
 const continentSelectionText = (cs: ContinentSection): string => {
+  const { originalPopulation, xywh, subRegions, ...displayValues } = {
+    ...cs,
+    totalPopulation: `${Math.floor(cs.totalPopulation / 100000) / 10} million`,
+  }
   return JSON.stringify(
-    {
-      ...cs,
-      totalPopulation: `${
-        Math.floor(cs.totalPopulation / 100000) / 10
-      } million`,
-    },
+    displayValues,
     (key, val) =>
       typeof val === 'number'
         ? val > 10
