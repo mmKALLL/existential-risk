@@ -112,6 +112,7 @@ export function drawUIComponents(state: GameState) {
     )
       .toISOString()
       .slice(0, 10)}` + // Get the date only
+    ` - game speed: ${state.gameSpeed}x` + // game speed
       '\n' +
       `Your budget: ${(state.globalBudget / 1000000).toFixed(1)} million USD.`,
     10,
