@@ -52,7 +52,12 @@ export type ContinentSection = {
   happiness: number // float from 0 to 10; indicates optimism and generosity. Low happiness compared to neighbors causes immigration
   happinessDelta: number // Acceleration of happiness per year; influenced by overpopulation, conflict, finance, education, and tech
 
-  foodIndex: number // 0 to 10, higher is better. Level of malnourishment and famine. Finance increases but mass immigration and conflict greatly decreases. High values boost education. Anything less than 5 is extremely alarming; 5-8 is serious and more than 9 normal.
+  /**
+   * Food index. 0 to 10, higher is better. Level of malnourishment and famine.
+   * Finance increases but mass immigration and conflict greatly decreases. High values boost education.
+   * Anything less than 5 is extremely alarming; 5-8 is serious and more than 9 normal.
+   */
+  foodIndex: number
 
   /**
    * Finance index.
@@ -62,7 +67,8 @@ export type ContinentSection = {
    *     where x is 1/1000 of GDP per capita in international PPP adjusted dollars
    */
   financeIndex: number // 0 to 10, level of financial freedom
-  educationIndex: number // 0 to 10, level of education. Influences tech and finance.
+
+  educationIndex: number // 0 to 10, level of education. Influences tech and finance, influenced by food and happiness.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
   techIndex: number // 0 to 100, level of tech in the region. Impacts finances and happinessDelta, as well as education. 8 to 10 is normal for US 2000s, 10-15 normal for US 2010s, anything beyond 20 causes unrest and AI/nuclear threat
   techIndexDelta: number // acceleration of tech index per year
