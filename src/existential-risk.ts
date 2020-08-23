@@ -174,7 +174,7 @@ function startGame() {
     const x = event.clientX - bound.left - canvas.clientLeft
     const y = event.clientY - bound.top - canvas.clientTop
 
-    if (x < constants.topPanelHeight || y > constants.mapWidth) {
+    if (y < constants.topPanelHeight || x > constants.mapWidth) {
       // TODO: Add UI buttons to clickedButtons
     } else {
       // Handle map selections
