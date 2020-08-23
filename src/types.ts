@@ -65,6 +65,7 @@ export type ContinentSection = {
 
   // Disease causes deaths. Decreases over time as a function of education, random events cause a jump in proportion to finance index.
   diseaseIndex: number // 0 to 100, normally around 0-5 for wealthy countries and 5-15 elsewhere. Global 10 or continental 20 is the threshold for declaring a pandemic.
+  corruptionIndex: number // 0 to 1, percentage of how likely aid is to be hampered or nullified in the region. Impacted by happinessDelta.
 
   /**
    * Conflict level.
@@ -83,7 +84,6 @@ export type ContinentSection = {
    * 9 is international nuclear war, i.e. existential threat
    */
   conflictLevel: number // float with level of conflict within the region
-  corruptionLevel: number // 0 to 100, percentage of how likely aid is to be hampered or nullified in the region. Impacted by happinessDelta.
 
   globalTempDiffSensitivity: number // -5 to 5. Multiplier for happiness/finance sensitivity to climate change
   subRegions: Partial<ContinentSection[]> // unused
@@ -128,6 +128,7 @@ export const initialGameState = (): GameState => ({
 // Food index is based on the inverse of Global Hunger Index, from: https://ourworldindata.org/hunger-and-undernourishment
 // Finance index is based on GDP, compiled from data on Our World in Data and IMF.
 // globalTempDiffSensitivity based on estimations from World Climate Map: https://www.mapsofworld.com/world-maps/world-climate-map.html
+// Corruption index is based on the inverse of Corruption Perceptions Index. Dataset by Transparency International: https://www.transparency.org/en/cpi and https://www.transparency.org/en/cpi/2019/results/table
 // Conflict level based on guesstimations and news
 const initialContinents = (): ContinentSection[] => [
   {
@@ -149,7 +150,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.586206896,
     globalTempDiffSensitivity: 3.6,
     subRegions: [],
     neighbors: ['Europe', 'Asia', 'South America', 'Antarctica'],
@@ -174,7 +175,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.528735632,
     globalTempDiffSensitivity: 2.4,
     subRegions: [],
     neighbors: ['Africa', 'Australia', 'Europe', 'North America', 'Russia'],
@@ -199,7 +200,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.287356321, // Wide divide between north (0.022988505) and south (0.310344827). Decided to pick the median value.
     globalTempDiffSensitivity: 1.2,
     subRegions: [],
     neighbors: ['Africa', 'Asia', 'North America', 'Russia'],
@@ -224,7 +225,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.16091954,
     globalTempDiffSensitivity: -0.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'Central America', 'Russia'],
@@ -249,7 +250,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.597701149,
     globalTempDiffSensitivity: 1.8,
     subRegions: [],
     neighbors: ['North America', 'South America'],
@@ -274,7 +275,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.505747126,
     globalTempDiffSensitivity: 0.7,
     subRegions: [],
     neighbors: ['Africa', 'Central America', 'Antarctica'],
@@ -299,7 +300,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.252873563,
     globalTempDiffSensitivity: -1.6,
     subRegions: [],
     neighbors: ['Africa', 'South America'],
@@ -324,7 +325,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.057471264,
     globalTempDiffSensitivity: 1.1,
     subRegions: [],
     neighbors: ['Asia'],
@@ -349,7 +350,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
-    corruptionLevel: 0,
+    corruptionIndex: 0.678160919,
     globalTempDiffSensitivity: -4.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'North America'],
@@ -376,7 +377,7 @@ const continentBase: ContinentSection = {
   techIndexDelta: 0,
   diseaseIndex: 0,
   conflictLevel: 0,
-  corruptionLevel: 0,
+  corruptionIndex: 0,
   globalTempDiffSensitivity: 0,
   subRegions: [],
   neighbors: [],
