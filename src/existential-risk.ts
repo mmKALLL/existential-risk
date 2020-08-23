@@ -25,6 +25,34 @@ export const constants = {
   lineHeight: 20,
 }
 
+/**
+ * Start loading the images and set up buttons/canvas
+ */
+
+type LoadableImage = HTMLImageElement & { ready?: boolean }
+
+const loadImage = (name: string, format: 'png' | 'svg'): void => {
+  const image: LoadableImage = new Image()
+  image.src = 'assets/' + name + '.' + format
+  image.onload = () => (image.ready = true)
+  images[name] = image
+}
+
+function areImagesLoaded() {
+  return Object.values(images).every(image => image.ready)
+}
+
+const images: { [k: string]: LoadableImage } = {}
+
+loadImage('continents1', 'png')
+loadImage('continents2', 'png')
+loadImage('economy', 'svg')
+loadImage('education', 'svg')
+loadImage('finance', 'svg')
+loadImage('peacekeeper', 'svg')
+loadImage('renewable', 'svg')
+loadImage('research', 'svg')
+
 // Shown when a continent is selected in game state
 export const UIButtons: UIButton[] = [
   {
@@ -32,7 +60,7 @@ export const UIButtons: UIButton[] = [
     description: 'Provide money to a region to boost their economic growth.',
     additionalDescription:
       'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
-    icon: undefined,
+    icon: images.economy,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -41,7 +69,7 @@ export const UIButtons: UIButton[] = [
     description: 'Provide money to a region as immediate financial relief.',
     additionalDescription:
       'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
-    icon: undefined,
+    icon: images.finance,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -50,7 +78,7 @@ export const UIButtons: UIButton[] = [
     description: 'Provide financial aid for having more schools and teachers.',
     additionalDescription:
       'Improves education, which over time decreases birth rate and increases finance/tech.',
-    icon: undefined,
+    icon: images.education,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -60,7 +88,7 @@ export const UIButtons: UIButton[] = [
       'Begin a series of technological research projects in the region.',
     additionalDescription:
       'Boosts tech level based on current education level, with long-term effects in finance, health, and happiness.',
-    icon: undefined,
+    icon: images.research,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -70,7 +98,7 @@ export const UIButtons: UIButton[] = [
       'Provide financial stimulus for improving the energy infrastructure.',
     additionalDescription:
       'Short-term financial boost and long-term improvement for global warming and happiness.',
-    icon: undefined,
+    icon: images.renewable,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -79,7 +107,7 @@ export const UIButtons: UIButton[] = [
     description: 'Send a group of peacekeepers and negotiators in the region.',
     additionalDescription:
       'Immediate decrease in conflict levels, providing relief in food and happiness and decreasing emigration.',
-    icon: undefined,
+    icon: images.peacekeeper,
     costFunction: cs => 0,
     onClick: gs => gs,
   },
@@ -343,34 +371,6 @@ const sum = (array: number[]): number => {
 function assertNever(x: never): never {
   throw new Error(`Unexpected object in assertNever:\n  ${x}`)
 }
-
-/**
- * Start loading the images
- */
-
-type LoadableImage = HTMLImageElement & { ready?: boolean }
-
-const loadImage = (name: string, format: 'png' | 'svg'): void => {
-  const image: LoadableImage = new Image()
-  image.src = 'assets/' + name + '.' + format
-  image.onload = () => (image.ready = true)
-  images[name] = image
-}
-
-function areImagesLoaded() {
-  return Object.values(images).every(image => image.ready)
-}
-
-const images: { [k: string]: LoadableImage } = {}
-
-loadImage('continents1', 'png')
-loadImage('continents2', 'png')
-loadImage('economy', 'svg')
-loadImage('education', 'svg')
-loadImage('finance', 'svg')
-loadImage('peacekeeper', 'svg')
-loadImage('renewable', 'svg')
-loadImage('research', 'svg')
 
 /**
  * Once images are loaded, start the game!
