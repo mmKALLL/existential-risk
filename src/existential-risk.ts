@@ -4,8 +4,15 @@ import {
   ContinentSection,
   ContinentName,
   UIButton,
+  Rectangle,
 } from './types'
-import { render, getContinentWithinCoordinate } from './render'
+import {
+  render,
+  getContinentWithinCoordinate,
+  getSelectedContinent,
+  isWithinRectangle,
+  getButtonRect,
+} from './render'
 
 /**
  * Constants
@@ -59,12 +66,16 @@ loadImage('research', 'svg')
 export const UIButtons: UIButton[] = [
   {
     name: 'Economic boost',
-    description: 'Provide money to a region to boost their economic growth.',
+    description:
+      'Invest money in a region to boost their economic growth permanently.',
     additionalDescription:
       'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
     icon: images.economy,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 2000,
+    onClick: cs => {
+      const GDPCapitaMultiplier = cs.GDPCapitaMultiplier + 0.01
+      return { ...cs, GDPCapitaMultiplier }
+    },
   },
   {
     name: 'Financial boost',
@@ -72,8 +83,21 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
     icon: images.finance,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => (cs.GDPCapita * cs.totalPopulation) / 100000,
+    onClick: cs => {
+      const GDPCapita = cs.GDPCapita * 1.001
+      const happiness = cs.happiness + 0.1
+      const happinessDelta = cs.happinessDelta - 0.005
+      const foodIndex = cs.foodIndex + (10 - cs.foodIndex) * 0.1
+
+      return {
+        ...cs,
+        GDPCapita,
+        happiness,
+        happinessDelta,
+        foodIndex,
+      }
+    },
   },
   {
     name: 'Education reform',
