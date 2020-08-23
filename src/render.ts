@@ -106,13 +106,26 @@ export function drawUIComponents(state: GameState) {
   // Top panel
   drawTopBarComponentBorder(1600, 1600 - strokeWidth, constants.topPanelHeight)
 
+  // date and speed
+  drawMultilineText(
+    `Current date: ${new Date(
+      new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
+    )
+      .toISOString()
+      .slice(0, 10)}` + // Get the date only
+      '\n' +
+      `Your budget: ${(state.globalBudget / 1000000).toFixed(1)} million USD.`,
+    10,
+    10 + strokeOffset,
+    400
+  )
+
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
   const statusBoxHeight = 150
   drawTopBarComponentBorder(constants.mapWidth, statusBoxWidth, statusBoxHeight)
 
   // Status box texts
-  useText()
   drawMultilineText(
     'World stats (average):\nHappiness: 100\nConfidence: 100',
     constants.mapWidth - statusBoxWidth + 10,
@@ -130,45 +143,32 @@ export function drawUIComponents(state: GameState) {
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
   renderSelectionBoxContents(state, strokeOffset)
 
-  // date and speed
-  useText()
-  drawMultilineText(
-    `Current date: ${new Date(
-      new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
-    )
-      .toISOString()
-      .slice(0, 10)}` + // Get the date only
-      '\n' +
-      `Your budget: ${(state.globalBudget / 1000000).toFixed(1)} million USD.`,
-    200,
-    10 + strokeOffset,
-    400
-  )
-
-  // debug
-  useText()
-  drawMultilineText(
-    `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})` +
-      '\n' +
-      `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})`
-        .split('')
-        .reverse()
-        .join(''),
-    10 + strokeOffset,
-    10 + strokeOffset,
-    400
-  )
+  // // debug
+  // useText()
+  // drawMultilineText(
+  //   `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})` +
+  //     '\n' +
+  //     `Mouse point: (${state.lastMouseX}, ${state.lastMouseY})`
+  //       .split('')
+  //       .reverse()
+  //       .join(''),
+  //   10 + strokeOffset,
+  //   10 + strokeOffset,
+  //   400
+  // )
 }
 
 function renderSelectionBoxContents(state: GameState, strokeOffset: number) {
   // Selection box texts
+  drawMultilineText('Continent stats:', constants.mapWidth + 10, 10, 180)
+
   const continent = getSelectedContinent(state)
   if (continent) {
     const selectionText = continentSelectionText(continent)
     drawMultilineText(
       selectionText,
       constants.mapWidth + 10,
-      10,
+      10 + constants.lineHeight,
       180 // 10 pixels of padding on both sides of the panel
     )
   }
@@ -277,7 +277,10 @@ const getSelectedContinent = (
 const continentSelectionText = (cs: ContinentSection): string => {
   const { originalPopulation, xywh, subRegions, ...displayValues } = {
     ...cs,
-    totalPopulation: `${Math.floor(cs.totalPopulation / 100000) / 10} million`,
+    totalPopulation:
+      cs.name === 'Antarctica'
+        ? cs.totalPopulation // show raw number for antarctica, in millions for others
+        : `${Math.floor(cs.totalPopulation / 100000) / 10} million`,
   }
   return JSON.stringify(
     displayValues,
@@ -289,6 +292,9 @@ const continentSelectionText = (cs: ContinentSection): string => {
         : val,
     1
   )
+    .replace(/"/g, '') // minor cleanup
+    .replace(/\n /g, '\n')
+    .slice(2, -2)
 }
 
 // Check if the point's x-y is between the rectangle's corners
