@@ -15,6 +15,14 @@ export type GameState = {
   lastMouseY: number
 }
 
+export type UIButton = {
+  name: string
+  description: string // what the button does, full sentence
+  additionalDescription: string // second line with what its action influences in the long term, full sentence
+  icon?: HTMLImageElement // Square, will be resized to ~28x28
+  onClick: (gs: GameState) => GameState
+}
+
 export type ContinentName =
   | 'Africa'
   | 'Asia'
@@ -28,6 +36,7 @@ export type ContinentName =
 
 export type ContinentSection = {
   name: ContinentName
+  originalPopulation: number
   totalPopulation: number
   birthRate: number // births / 1000 pop / year
   birthRateDelta: number // acceleration of population growth yer year; decreases from high education or low happiness
@@ -50,7 +59,7 @@ export type ContinentSection = {
   financeIndex: number // 0 to 10, level of financial freedom
   educationIndex: number // 0 to 10, level of education. Influences tech and finance.
   //                        Free universal junior high corresponds to 5; upper sec. to 7, uni to 9, doctorate to 10
-  techIndex: number // 0 to 100, level of tech in the region. 8 to 10 is normal for US 2000s, 10-25 normal for US 2010s, anything beyond causes unrest and AI/nuclear threat
+  techIndex: number // 0 to 100, level of tech in the region. Impacts finances and happinessDelta, as well as education. 8 to 10 is normal for US 2000s, 10-25 normal for US 2010s, anything beyond causes unrest and AI/nuclear threat
   techIndexDelta: number // acceleration of tech index per year
 
   // Disease causes deaths. Decreases over time as a function of education, random events cause a jump in proportion to finance index.
@@ -59,7 +68,7 @@ export type ContinentSection = {
   /**
    * Conflict level.
    * Immigration/emigration both cause and are caused by this. Two parties may not have the same level (usually winning belligerent has less unrest).
-   * Great negative impact on happiness and foodIndex. Larger conflict causes many deaths.
+   * Great negative impact on happiness and foodIndex. Larger conflict causes many deaths, and spreads to neighboring regions.
    *
    * 0 is absolute peace,
    * 1 is minor unrest and occasional violence,
@@ -73,6 +82,7 @@ export type ContinentSection = {
    * 9 is international nuclear war, i.e. existential threat
    */
   conflictLevel: number // float with level of conflict within the region
+  corruptionLevel: number // 0 to 100, percentage of how likely aid is to be hampered or nullified in the region. Impacted by happinessDelta.
 
   globalTempDiffSensitivity: number // -5 to 5. Multiplier for happiness/finance sensitivity to climate change
   subRegions: Partial<ContinentSection[]> // unused
@@ -121,6 +131,7 @@ export const initialGameState = (): GameState => ({
 const initialContinents = (): ContinentSection[] => [
   {
     name: 'Africa',
+    originalPopulation: 1340598147,
     totalPopulation: 1340598147,
     birthRate: 35.91,
     birthRateDelta: -0.41,
@@ -137,6 +148,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 3.6,
     subRegions: [],
     neighbors: ['Europe', 'Asia', 'South America', 'Antarctica'],
@@ -144,6 +156,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Asia',
+    originalPopulation: 4641054775 - 144386830,
     totalPopulation: 4641054775 - 144386830, // Subtract Russia as it became its own continent
     birthRate: 21.2,
     birthRateDelta: -0.386,
@@ -160,6 +173,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 2.4,
     subRegions: [],
     neighbors: ['Africa', 'Australia', 'Europe', 'North America', 'Russia'],
@@ -167,6 +181,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Europe',
+    originalPopulation: 747636026,
     totalPopulation: 747636026,
     birthRate: 9.9,
     birthRateDelta: -0.152,
@@ -183,6 +198,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 1.2,
     subRegions: [],
     neighbors: ['Africa', 'Asia', 'North America', 'Russia'],
@@ -190,6 +206,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'North America',
+    originalPopulation: 592072212,
     totalPopulation: 592072212,
     birthRate: 12.8,
     birthRateDelta: -0.24,
@@ -206,6 +223,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: -0.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'Central America', 'Russia'],
@@ -213,6 +231,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Central America',
+    originalPopulation: 430759766,
     totalPopulation: 430759766,
     birthRate: 20.97,
     birthRateDelta: -0.32,
@@ -229,6 +248,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 1.8,
     subRegions: [],
     neighbors: ['North America', 'South America'],
@@ -236,6 +256,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'South America',
+    originalPopulation: 430759766,
     totalPopulation: 430759766,
     birthRate: 15.2,
     birthRateDelta: -0.261,
@@ -252,6 +273,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 0.7,
     subRegions: [],
     neighbors: ['Africa', 'Central America', 'Antarctica'],
@@ -259,6 +281,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Antarctica',
+    originalPopulation: 2687,
     totalPopulation: 2687,
     birthRate: 2.3,
     birthRateDelta: -0.18,
@@ -275,6 +298,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: -1.6,
     subRegions: [],
     neighbors: ['Africa', 'South America'],
@@ -282,6 +306,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Australia',
+    originalPopulation: 42677813,
     totalPopulation: 42677813,
     birthRate: 14.5,
     birthRateDelta: -0.24,
@@ -298,6 +323,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: 1.1,
     subRegions: [],
     neighbors: ['Asia'],
@@ -305,6 +331,7 @@ const initialContinents = (): ContinentSection[] => [
   },
   {
     name: 'Russia',
+    originalPopulation: 144386830,
     totalPopulation: 144386830,
     birthRate: 12.9,
     birthRateDelta: 0.16,
@@ -321,6 +348,7 @@ const initialContinents = (): ContinentSection[] => [
     techIndexDelta: 0,
     diseaseIndex: 0,
     conflictLevel: 0,
+    corruptionLevel: 0,
     globalTempDiffSensitivity: -4.4,
     subRegions: [],
     neighbors: ['Asia', 'Europe', 'North America'],
@@ -330,7 +358,8 @@ const initialContinents = (): ContinentSection[] => [
 
 const continentBase: ContinentSection = {
   name: 'Europe',
-  totalPopulation: 0,
+  originalPopulation: 0,
+    totalPopulation: 0,
   birthRate: 0,
   birthRateDelta: 0,
   lifeExpectancy: 0,
@@ -346,6 +375,7 @@ const continentBase: ContinentSection = {
   techIndexDelta: 0,
   diseaseIndex: 0,
   conflictLevel: 0,
+  corruptionLevel: 0,
   globalTempDiffSensitivity: 0,
   subRegions: [],
   neighbors: [],
