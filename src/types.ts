@@ -4,11 +4,13 @@
 
 export type GameState = {
   day: number
-  continentSections: ContinentSection[]
+  globalBudget: number // Player's money reserves. Do a good job increasing happiness and you earn more.
   co2ppm: number // co2 parts per million in atmosphere. Values above 300 slightly hamper education. Values above 400 are harmful; outdoor air pollution is the world's 4th numerous killer with 4.9 deaths caused yearly. High values may boost crop productivity, though.
   co2ppmDelta: number // Increase in co2ppm per year. Based on extrapolating https://www.kaggle.com/ucsandiego/carbon-dioxide
   globalTempDiff: number // change in global surface temperature relative to 1951-1980 average temperatures, https://climate.nasa.gov/vital-signs/global-temperature/
   globalTempDiffDelta: number // yearly change in globalTempDiff; high temp causes unrest and decreases finances, causing emigration
+  continentSections: ContinentSection[]
+  selectedContinent: ContinentSection | undefined
 }
 
 export type ContinentName =
@@ -94,11 +96,13 @@ export type MouseBuffer = {
 // Sources for game state values in type definition.
 export const initialGameState = (): GameState => ({
   day: 0, // From 2020-01-01
-  continentSections: initialContinents(),
+  globalBudget: Math.pow(10, 8), // start with 100M
   co2ppm: 415.5,
   co2ppmDelta: 2.85,
   globalTempDiff: 0.99,
   globalTempDiffDelta: 0.039,
+  continentSections: initialContinents(),
+  selectedContinent: undefined,
 })
 
 // Population counts based on 2020 data from: https://www.worldometers.info/geography/7-continents/

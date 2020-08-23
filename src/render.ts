@@ -7,15 +7,10 @@ import {
   Rectangle,
   Coordinate,
 } from './types'
+import { constants } from './existential-risk'
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-
-const constants = {
-  topPanelBorderWidth: 4,
-  fontSize: 14,
-  lineHeight: 20,
-}
 
 /**
  * Drawing functions
@@ -33,7 +28,7 @@ export function render(
 }
 
 export function clearCanvas() {
-  ctx.clearRect(0, 0, 1400, 900)
+  ctx.clearRect(0, 0, constants.mapWidth, 900)
 }
 
 export function drawBackground(images: any) {
@@ -72,10 +67,16 @@ export function drawContinents(state: GameState) {
 
   // Draw Asia-NA connections across the pacific
   ctx.moveTo(...xywhCenter(getContinent(state, 'Asia')!.xywh))
-  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Asia').y)
+  ctx.lineTo(
+    constants.mapWidth,
+    continentMidCoordinate(state, 'North America', 'Asia').y
+  )
 
   ctx.moveTo(...xywhCenter(getContinent(state, 'Russia')!.xywh))
-  ctx.lineTo(1400, continentMidCoordinate(state, 'North America', 'Russia').y)
+  ctx.lineTo(
+    constants.mapWidth,
+    continentMidCoordinate(state, 'North America', 'Russia').y
+  )
 
   // Finish the path and draw everything in one shot
   ctx.stroke()
@@ -110,24 +111,24 @@ export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   ctx.beginPath()
 
   // Top panel
-  drawTopBarComponentBorder(1600, 1600 - strokeWidth, 55)
+  drawTopBarComponentBorder(1600, 1600 - strokeWidth, constants.topPanelHeight)
 
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
   const statusBoxHeight = 150
-  drawTopBarComponentBorder(1400, statusBoxWidth, statusBoxHeight)
+  drawTopBarComponentBorder(constants.mapWidth, statusBoxWidth, statusBoxHeight)
 
   // Status box texts
   useText()
   drawMultilineText(
     'World stats (average):\nHappiness: 100\nConfidence: 100',
-    1400 - statusBoxWidth + 10,
+    constants.mapWidth - statusBoxWidth + 10,
     10 + strokeOffset,
     statusBoxWidth / 2 - 30
   )
   drawMultilineText(
     'World stats (median):\nHappiness: 80\nConfidence: 80',
-    1400 - statusBoxWidth / 2 + 5,
+    constants.mapWidth - statusBoxWidth / 2 + 5,
     10 + strokeOffset,
     statusBoxWidth / 2 - 30
   )
@@ -136,10 +137,15 @@ export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
   drawTopBarComponentBorder(1600, 200, 900 - strokeWidth * 2)
 
   // Selection box texts
-  const continent = selectedContinent(state, mouseBuffer)
+  const continent = getSelectedContinent(state, mouseBuffer)
   if (continent) {
     const selectionText = continentSelectionText(continent)
-    drawMultilineText(selectionText, 1400 + 10, 10 + strokeOffset, 180)
+    drawMultilineText(
+      selectionText,
+      constants.mapWidth + 10,
+      10 + strokeOffset,
+      180
+    )
   }
 
   // date and speed
@@ -151,7 +157,7 @@ export function drawUIComponents(state: GameState, mouseBuffer: MouseBuffer) {
       .toISOString()
       .slice(0, 10)}` + // Get the date only
       '\n' +
-      `Test text on a newline.`,
+      `Your budget: ${(state.globalBudget / 1000000).toFixed(1)} million USD.`,
     200,
     10 + strokeOffset,
     400
@@ -243,6 +249,13 @@ const continentMidCoordinate = (
 const getContinent = (state: GameState, name: ContinentName) =>
   state.continentSections.find(cs => cs.name === name)
 
+const getContinentWithinCoordinate = (
+  state: GameState,
+  point: Point
+): ContinentSection | undefined => {
+  return state.continentSections.find(cs => isWithinRectangle(point, cs.xywh))
+}
+
 // Check if the connection crosses the pacific ocean. If so the connection lines need to wrap the edges instead of going straight across
 const isPacificConnection = (
   name1: ContinentName,
@@ -254,13 +267,17 @@ const isPacificConnection = (
   )
 }
 
-const selectedContinent = (
+const getSelectedContinent = (
   state: GameState,
   mouseBuffer: MouseBuffer
 ): ContinentSection | undefined => {
-  return state.continentSections.find(cs =>
-    isWithinRectangle([mouseBuffer.lastMouseX, mouseBuffer.lastMouseY], cs.xywh)
-  )
+  if (state.selectedContinent) {
+    return state.selectedContinent
+  }
+  return getContinentWithinCoordinate(state, [
+    mouseBuffer.lastMouseX,
+    mouseBuffer.lastMouseY,
+  ])
 }
 
 const continentSelectionText = (cs: ContinentSection): string => {

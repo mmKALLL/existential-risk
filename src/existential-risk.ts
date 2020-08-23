@@ -15,10 +15,18 @@ import { render } from './render'
  * Constants
  */
 
-const constants = {
+export const constants = {
+  // Internal stuff
   FPS: 30,
   yearLengthMillis: 120 * 1000, // 2 minutes
   maxPopulation: Math.pow(10, 10), // 10 billion is max for one continent, no matter what
+
+  // Rendering stuff
+  mapWidth: 1400,
+  topPanelHeight: 55,
+  topPanelBorderWidth: 4,
+  fontSize: 14,
+  lineHeight: 20,
 }
 
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement
@@ -61,13 +69,25 @@ function startGame() {
   }, timePerFrame)
 
   // Event handlers
-  // Get mouse position and store it in gameState
+  // Get mouse position and store it in game state
   canvas.addEventListener('mousemove', event => {
-    let bound = canvas.getBoundingClientRect()
+    const bound = canvas.getBoundingClientRect()
 
     mouseBuffer.lastMouseX = event.clientX - bound.left - canvas.clientLeft
     mouseBuffer.lastMouseY = event.clientY - bound.top - canvas.clientTop
   })
+
+  // On left click store selected continent in game state (clicking outside any continent but within map clears selection)
+  canvas.addEventListener('mousedown', event => {
+    const bound = canvas.getBoundingClientRect()
+
+    const x = event.clientX - bound.left - canvas.clientLeft
+    const y = event.clientY - bound.top - canvas.clientTop
+
+    x < constants.topPanelHeight || y > constants.mapWidth
+  })
+
+  // Also clear selection on right click
 }
 
 /**
