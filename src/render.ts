@@ -252,6 +252,22 @@ function drawUIButtons(state: GameState) {
   }
 }
 
+function drawNews(state: GameState) {
+  const news = [
+    'Finland named happiest country on earth!',
+    'Olympics delayed due to COVID-19.',
+    'Natural disasters ravaging Australia.\nPopulation unhappy. But everything will be fine again.',
+    'UN doing a great job of keeping the world happy.',
+  ]
+
+  drawMultilineText(
+    `News: ${news[Math.floor(state.day / 14) % news.length]}`, // display current news articles in rotation, changing every 14 days
+    constants.buttonLeftX + (constants.buttonSize + 8) * UIButtons.length + 40,
+    13,
+    500
+  )
+}
+
 function useText() {
   ctx.strokeStyle = '#101'
   ctx.lineWidth = 1
