@@ -106,7 +106,6 @@ export function drawUIComponents(state: GameState) {
   // Top panel
   drawTopBarComponentBorder(1600, 1600 - strokeWidth, constants.topPanelHeight)
 
-  // date and speed
   drawMultilineText(
     `Current date: ${new Date(
       new Date().setFullYear(2020, 0, 1) + state.day * 3600 * 1000 * 24 // add days; one day is 3600000 * 24 milliseconds
@@ -121,6 +120,8 @@ export function drawUIComponents(state: GameState) {
   )
 
   drawUIButtons(state)
+
+  drawNews(state)
 
   // Top-right status box. Starts from graph box.
   const statusBoxWidth = 350
@@ -287,7 +288,7 @@ function useContinentBorder() {
 
 function useButtonStyle() {
   ctx.strokeStyle = '#101'
-  ctx.lineWidth = 2
+  ctx.lineWidth = 3
 }
 
 const randomRGBStyle = (): string =>
@@ -357,8 +358,8 @@ const continentSelectionText = (cs: ContinentSection): string => {
     ...cs,
     totalPopulation:
       cs.name === 'Antarctica'
-        ? cs.totalPopulation // show raw number for antarctica, in millions for others
-        : `${Math.floor(cs.totalPopulation / 100000) / 10} million`,
+        ? cs.totalPopulation // show raw number for Antarctica, in millions for others
+        : formatWithMillion(cs.totalPopulation),
   }
   return JSON.stringify(
     displayValues,
@@ -374,6 +375,9 @@ const continentSelectionText = (cs: ContinentSection): string => {
     .replace(/\n /g, '\n')
     .slice(2, -2)
 }
+
+const formatWithMillion = (value: number) =>
+  `${Math.floor(value / 100000) / 10} million`
 
 // Check if the point's x-y is between the rectangle's corners
 const isWithinRectangle = (point: Point, rect: Rectangle) => {
