@@ -32,6 +32,8 @@ export const UIButtons: UIButton[] = [
     description: 'Provide money to a region to boost their economic growth.',
     additionalDescription:
       'Helps the economy grow, providing long-term benefits to happiness, education, and food stability.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
   {
@@ -39,6 +41,8 @@ export const UIButtons: UIButton[] = [
     description: 'Provide money to a region as immediate financial relief.',
     additionalDescription:
       'Does little to help the economy grow, but can alleviate happiness and food stability in the short term.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
   {
@@ -46,6 +50,8 @@ export const UIButtons: UIButton[] = [
     description: 'Provide financial aid for having more schools and teachers.',
     additionalDescription:
       'Improves education, which over time decreases birth rate and increases finance/tech.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
   {
@@ -54,6 +60,8 @@ export const UIButtons: UIButton[] = [
       'Begin a series of technological research projects in the region.',
     additionalDescription:
       'Boosts tech level based on current education level, with long-term effects in finance, health, and happiness.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
   {
@@ -62,6 +70,8 @@ export const UIButtons: UIButton[] = [
       'Provide financial stimulus for improving the energy infrastructure.',
     additionalDescription:
       'Short-term financial boost and long-term improvement for global warming and happiness.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
   {
@@ -69,6 +79,8 @@ export const UIButtons: UIButton[] = [
     description: 'Send a group of peacekeepers and negotiators in the region.',
     additionalDescription:
       'Immediate decrease in conflict levels, providing relief in food and happiness and decreasing emigration.',
+    icon: undefined,
+    costFunction: cs => 0,
     onClick: gs => gs,
   },
 ]

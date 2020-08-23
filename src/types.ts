@@ -20,6 +20,7 @@ export type UIButton = {
   description: string // what the button does, full sentence
   additionalDescription: string // second line with what its action influences in the long term, full sentence
   icon?: HTMLImageElement // Square, will be resized to ~28x28
+  costFunction: (cs: ContinentSection) => number
   onClick: (gs: GameState) => GameState
 }
 
