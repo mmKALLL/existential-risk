@@ -354,21 +354,22 @@ const continentSelectionText = (cs: ContinentSection): string => {
       cs.name === 'Antarctica'
         ? cs.totalPopulation // show raw number for Antarctica, in millions for others
         : formatWithMillion(cs.totalPopulation),
+    happiness: formatNumber(cs.happiness) + ' ⭐️',
+    foodIndex: formatNumber(cs.foodIndex) + ' ⭐️',
+    conflictLevel: formatNumber(cs.conflictLevel) + ' ☠️',
   }
-  return JSON.stringify(
-    displayValues,
-    (key, val) =>
-      typeof val === 'number'
-        ? val > 10
-          ? val.toFixed(0)
-          : val.toFixed(2)
-        : val,
-    1
-  )
+  return JSON.stringify(displayValues, (k, v) => formatNumber(v), 1)
     .replace(/"/g, '') // minor cleanup
     .replace(/\n /g, '\n')
     .slice(2, -2)
 }
+
+const formatNumber = (value: number) =>
+  typeof value === 'number'
+    ? value > 10
+      ? value.toFixed(0)
+      : value.toFixed(2)
+    : value
 
 const formatWithMillion = (value: number) =>
   `${Math.floor(value / 100000) / 10} million`
