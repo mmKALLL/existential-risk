@@ -249,7 +249,7 @@ function drawUIButtons(state: GameState) {
 
 function drawNews(state: GameState) {
   const news = [
-    'Finland named happiest country on earth!',
+    'Finland named happiest country on Earth!',
     'Olympics delayed due to COVID-19.',
     'Natural disasters ravaging Australia.\nPopulation unhappy. But everything will be fine again.',
     'UN doing a great job of keeping the world happy.',

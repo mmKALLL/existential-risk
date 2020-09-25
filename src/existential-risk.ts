@@ -98,8 +98,13 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Short-term financial boost and long-term improvement for global warming and happiness.',
     icon: images.renewable,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => 100000000 / cs.techIndex,
+    onClick: cs => {
+      // TODO: Add numbers for global warming improvement
+      const techIndexDelta = cs.techIndexDelta + cs.techIndex * 0.001
+      const happinessDelta = cs.happinessDelta + cs.techIndex * 0.001
+      return { ...cs, techIndexDelta, happinessDelta }
+    },
   },
   {
     name: 'Peacekeepers',
@@ -107,8 +112,12 @@ export const UIButtons: UIButton[] = [
     additionalDescription:
       'Immediate decrease in conflict levels, providing relief in food and happiness and decreasing emigration.',
     icon: images.peacekeeper,
-    costFunction: cs => 0,
-    onClick: gs => gs,
+    costFunction: cs => (cs.conflictLevel + 3) * 5000000,
+    onClick: cs => {
+      const happiness = cs.happiness - 0.2
+      const conflictLevel = cs.conflictLevel - 1
+      return { ...cs, happiness, conflictLevel }
+    },
   },
   {
     name: 'Financial boost',
