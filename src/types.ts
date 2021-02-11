@@ -309,7 +309,7 @@ const initialContinents = (): ContinentSection[] => [
     happinessDelta: -0.088,
     foodIndex: 9.1,
     financeIndex: 7.1,
-    educationIndex: 7.84, // uses Chile's index
+    educationIndex: 7.84, // uses Chile's index, which seemed like a reasonable approximation
     techIndex: 11, // Hardcoded default. techIndex of Antarctica can provide ways to mitigate climate change
     techIndexDelta: 0.2,
     diseaseIndex: 3.5,
